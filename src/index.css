@@ -1,0 +1,240 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* GOONDAS INFO CENTRE Design System */
+@layer base {
+  :root {
+    /* Base colors */
+    --background: 220 25% 96%;
+    --foreground: 220 15% 15%;
+
+    /* Military-inspired palette */
+    --primary: 220 60% 25%;        /* Deep Navy Blue */
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 220 30% 85%;      /* Light Blue Gray */
+    --secondary-foreground: 220 15% 25%;
+    
+    --accent: 45 95% 50%;          /* Military Gold */
+    --accent-foreground: 220 15% 15%;
+    
+    --muted: 220 25% 90%;
+    --muted-foreground: 220 15% 45%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
+    
+    --border: 220 20% 85%;
+    --input: 220 20% 90%;
+    --ring: 220 60% 25%;
+    
+    /* Military specific colors */
+    --military-red: 0 75% 45%;
+    --military-green: 120 40% 35%;
+    --command-gold: 45 85% 55%;
+    --steel-blue: 210 35% 45%;
+    
+    /* Gradients */
+    --hero-gradient: linear-gradient(135deg, hsl(220 60% 25%) 0%, hsl(210 35% 45%) 100%);
+    --card-gradient: linear-gradient(145deg, hsl(0 0% 100%) 0%, hsl(220 25% 98%) 100%);
+    --futuristic-glow: 0 0 20px hsl(220 60% 50% / 0.3);
+    --neon-accent: 0 0 15px hsl(45 95% 50% / 0.5);
+    
+    --radius: 0.5rem;
+    
+    /* Sidebar */
+    --sidebar-background: 220 60% 25%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 45 95% 50%;
+    --sidebar-primary-foreground: 220 15% 15%;
+    --sidebar-accent: 220 50% 30%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 220 40% 35%;
+    --sidebar-ring: 45 95% 50%;
+
+  .dark {
+    --background: 220 25% 8%;
+    --foreground: 220 10% 90%;
+    --primary: 220 60% 35%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 220 25% 15%;
+    --secondary-foreground: 220 10% 80%;
+    --accent: 45 95% 60%;
+    --accent-foreground: 220 15% 10%;
+    --muted: 220 25% 12%;
+    --muted-foreground: 220 10% 60%;
+    --card: 220 25% 10%;
+    --card-foreground: 220 10% 90%;
+    --border: 220 25% 20%;
+    --input: 220 25% 15%;
+    --ring: 220 60% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
+
+@layer components {
+  /* Dashboard specific styles */
+  .dashboard-card {
+    @apply bg-card border border-border/50 rounded-xl shadow-md hover:shadow-lg transition-all duration-300;
+    background: var(--card-gradient);
+    backdrop-filter: blur(10px);
+    box-shadow: var(--futuristic-glow), 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .military-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold;
+    @apply bg-accent text-accent-foreground border border-accent/20 shadow-sm;
+  }
+  
+  .command-button {
+    @apply bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl;
+    @apply font-semibold tracking-wide transition-all duration-300;
+    @apply shadow-md hover:shadow-lg active:scale-95;
+    box-shadow: var(--futuristic-glow);
+  }
+  
+  .stats-card {
+    @apply dashboard-card p-4 text-center hover:scale-105 transition-transform duration-200;
+  }
+  
+  .module-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200;
+    @apply hover:bg-sidebar-accent hover:text-sidebar-accent-foreground;
+    @apply border-l-4 border-transparent hover:border-l-sidebar-primary;
+  }
+  
+  .kpa-item {
+    @apply dashboard-card p-4 hover:shadow-xl transition-all duration-300;
+    @apply border-l-4 border-l-primary hover:border-l-accent;
+    transform: translateZ(0);
+  }
+  
+  /* Custom Scrollbar for Sidebar */
+  .sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--sidebar-primary)) hsl(var(--sidebar-accent));
+    scroll-behavior: smooth;
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-track {
+    background: linear-gradient(
+      180deg,
+      hsl(var(--sidebar-accent) / 0.1) 0%,
+      hsl(var(--sidebar-accent) / 0.05) 50%,
+      hsl(var(--sidebar-accent) / 0.1) 100%
+    );
+    border-radius: 6px;
+    margin: 8px 0;
+    border: 1px solid hsl(var(--sidebar-border) / 0.2);
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(
+      180deg, 
+      hsl(var(--sidebar-primary)) 0%, 
+      hsl(var(--accent)) 30%,
+      hsl(var(--sidebar-primary)) 70%,
+      hsl(var(--accent)) 100%
+    );
+    border-radius: 6px;
+    border: 2px solid hsl(var(--sidebar-background));
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+      0 2px 4px hsl(var(--sidebar-primary) / 0.2),
+      inset 0 1px 0 hsl(var(--accent) / 0.3);
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg, 
+      hsl(var(--accent)) 0%, 
+      hsl(var(--sidebar-primary)) 30%,
+      hsl(var(--accent)) 70%,
+      hsl(var(--sidebar-primary)) 100%
+    );
+    box-shadow: 
+      0 0 12px hsl(var(--accent) / 0.5),
+      0 4px 8px hsl(var(--sidebar-primary) / 0.3),
+      inset 0 1px 0 hsl(var(--accent) / 0.5);
+    transform: scaleX(1.1);
+    border-color: hsl(var(--accent) / 0.3);
+  }
+  
+  .sidebar-scroll::-webkit-scrollbar-thumb:active {
+    background: linear-gradient(
+      180deg, 
+      hsl(var(--accent)) 0%, 
+      hsl(var(--command-gold)) 50%, 
+      hsl(var(--accent)) 100%
+    );
+    box-shadow: 
+      0 0 16px hsl(var(--accent) / 0.7),
+      0 6px 12px hsl(var(--sidebar-primary) / 0.4),
+      inset 0 2px 4px hsl(var(--accent) / 0.8);
+    transform: scaleX(1.15);
+  }
+  
+  /* Custom scrollbar corner */
+  .sidebar-scroll::-webkit-scrollbar-corner {
+    background: hsl(var(--sidebar-background));
+    border-radius: 6px;
+  }
+  
+  
+  /* Army Logo Styling */
+  .army-logo {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+  
+  .army-logo:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))
+            drop-shadow(0 0 12px hsl(var(--accent) / 0.3));
+  }
+  
+  .regiment-logo {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  }
+  
+  .regiment-logo:hover {
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))
+            drop-shadow(0 0 12px hsl(var(--accent) / 0.3));
+  }
+}
+}
+
+@layer utilities {
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-steel-blue bg-clip-text text-transparent;
+  }
+  
+  .military-shadow {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 
+                0 4px 16px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .futuristic-border {
+    @apply border border-border/30 rounded-xl;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(10px);
+  }
+}
