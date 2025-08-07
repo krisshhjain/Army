@@ -81,6 +81,23 @@
   body {
     @apply bg-background text-foreground font-sans antialiased;
   }
+
+  /* High-quality image rendering */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: optimize-contrast;
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: bicubic;
+  }
+
+  /* Specific class for profile images */
+  .profile-image {
+    image-rendering: auto;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
 }
 
 @layer components {
@@ -217,6 +234,327 @@
     transform: scale(1.05);
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2))
             drop-shadow(0 0 12px hsl(var(--accent) / 0.3));
+  }
+
+  /* Futuristic Military Navbar */
+  .futuristic-military-bg {
+    position: relative;
+    background: linear-gradient(
+      135deg,
+      hsl(var(--primary)) 0%,
+      hsl(220 70% 20%) 25%,
+      hsl(210 60% 15%) 50%,
+      hsl(220 70% 20%) 75%,
+      hsl(var(--primary)) 100%
+    );
+    border-bottom: 2px solid hsl(var(--accent));
+    box-shadow: 
+      0 0 30px hsl(var(--accent) / 0.3),
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  .futuristic-military-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 50%, hsl(var(--accent) / 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, hsl(var(--accent) / 0.1) 0%, transparent 50%),
+      linear-gradient(90deg, transparent 0%, hsl(var(--accent) / 0.05) 50%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .futuristic-military-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--accent)) 20%,
+      hsl(var(--command-gold)) 50%,
+      hsl(var(--accent)) 80%,
+      transparent 100%
+    );
+    animation: military-scan 3s ease-in-out infinite;
+  }
+
+  @keyframes military-scan {
+    0%, 100% { opacity: 0.3; transform: scaleX(0.8); }
+    50% { opacity: 1; transform: scaleX(1); }
+  }
+
+  /* Tech Grid Pattern */
+  .tech-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+  }
+
+  /* Corner Military Accents */
+  .corner-accent {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 2px solid hsl(var(--accent));
+    pointer-events: none;
+  }
+
+  .corner-accent::before,
+  .corner-accent::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: hsl(var(--accent));
+    box-shadow: 0 0 8px hsl(var(--accent));
+  }
+
+  .corner-accent.top-left {
+    top: 10px;
+    left: 10px;
+    border-right: none;
+    border-bottom: none;
+  }
+
+  .corner-accent.top-left::before {
+    top: -2px;
+    left: -2px;
+  }
+
+  .corner-accent.top-right {
+    top: 10px;
+    right: 10px;
+    border-left: none;
+    border-bottom: none;
+  }
+
+  .corner-accent.top-right::before {
+    top: -2px;
+    right: -2px;
+  }
+
+  .corner-accent.bottom-left {
+    bottom: 10px;
+    left: 10px;
+    border-right: none;
+    border-top: none;
+  }
+
+  .corner-accent.bottom-left::before {
+    bottom: -2px;
+    left: -2px;
+  }
+
+  .corner-accent.bottom-right {
+    bottom: 10px;
+    right: 10px;
+    border-left: none;
+    border-top: none;
+  }
+
+  .corner-accent.bottom-right::before {
+    bottom: -2px;
+    right: -2px;
+  }
+
+  /* Futuristic Text Styling */
+  .military-title {
+    position: relative;
+    text-shadow: 
+      0 0 10px hsl(var(--accent) / 0.5),
+      0 2px 4px rgba(0, 0, 0, 0.3);
+    letter-spacing: 12px;
+    font-weight: 900;
+    font-family: 'Impact', 'Arial Black', sans-serif;
+    text-transform: uppercase;
+    font-size: 2.5rem;
+  }
+
+  .military-title::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    right: -20px;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--accent) / 0.3) 30%,
+      hsl(var(--accent) / 0.6) 50%,
+      hsl(var(--accent) / 0.3) 70%,
+      transparent 100%
+    );
+    transform: translateY(-50%);
+    z-index: -1;
+  }
+
+  /* Military Slogan Styling */
+  .military-slogan {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-style: italic;
+    font-size: 1rem;
+    letter-spacing: 2px;
+    color: hsl(var(--accent));
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    opacity: 0.9;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  /* Military Rank Bars */
+  .rank-bars {
+    display: flex;
+    gap: 4px;
+    justify-content: center;
+    margin: 12px 0;
+  }
+
+  .rank-bar {
+    width: 40px;
+    height: 4px;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--accent)) 0%,
+      hsl(var(--command-gold)) 50%,
+      hsl(var(--accent)) 100%
+    );
+    border-radius: 2px;
+    animation: rank-pulse 3s ease-in-out infinite;
+  }
+
+  .rank-bar:nth-child(1) { animation-delay: 0s; }
+  .rank-bar:nth-child(2) { animation-delay: 0.5s; }
+  .rank-bar:nth-child(3) { animation-delay: 1s; }
+  .rank-bar:nth-child(4) { animation-delay: 1.5s; }
+  .rank-bar:nth-child(5) { animation-delay: 2s; }
+
+  @keyframes rank-pulse {
+    0%, 100% { 
+      opacity: 0.6; 
+      transform: scaleY(1);
+      box-shadow: 0 0 5px hsl(var(--accent) / 0.3);
+    }
+    50% { 
+      opacity: 1; 
+      transform: scaleY(1.2);
+      box-shadow: 0 0 15px hsl(var(--accent) / 0.6);
+    }
+  }
+
+  /* Military Stars */
+  .military-stars {
+    position: absolute;
+    top: 70%;
+    left: -30px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .military-star {
+    color: hsl(var(--accent));
+    font-size: 16px;
+    animation: star-twinkle 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px hsl(var(--accent) / 0.6));
+  }
+
+  .military-star:nth-child(1) { animation-delay: 0s; }
+  .military-star:nth-child(2) { animation-delay: 0.7s; }
+  .military-star:nth-child(3) { animation-delay: 1.4s; }
+
+  /* Right side stars */
+  .military-stars-right {
+    position: absolute;
+    top: 70%;
+    right: -30px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .military-stars-right .military-star {
+    color: hsl(var(--accent));
+    font-size: 16px;
+    animation: star-twinkle 2s ease-in-out infinite;
+    filter: drop-shadow(0 0 4px hsl(var(--accent) / 0.6));
+  }
+
+  .military-stars-right .military-star:nth-child(1) { animation-delay: 0.3s; }
+  .military-stars-right .military-star:nth-child(2) { animation-delay: 1s; }
+  .military-stars-right .military-star:nth-child(3) { animation-delay: 1.7s; }
+
+  @keyframes star-twinkle {
+    0%, 100% { 
+      opacity: 0.4; 
+      transform: scale(0.8) rotate(0deg);
+    }
+    50% { 
+      opacity: 1; 
+      transform: scale(1.1) rotate(180deg);
+    }
+  }
+
+  /* Military decorative elements */
+  .military-decoration {
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 8px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      hsl(var(--accent)) 20%,
+      hsl(var(--command-gold)) 50%,
+      hsl(var(--accent)) 80%,
+      transparent 100%
+    );
+    border-radius: 4px;
+  }
+
+  .military-decoration::before {
+    content: '★';
+    position: absolute;
+    left: -15px;
+    top: -8px;
+    color: hsl(var(--accent));
+    font-size: 16px;
+    animation: twinkle 2s ease-in-out infinite;
+  }
+
+  .military-decoration::after {
+    content: '★';
+    position: absolute;
+    right: -15px;
+    top: -8px;
+    color: hsl(var(--accent));
+    font-size: 16px;
+    animation: twinkle 2s ease-in-out infinite 1s;
+  }
+
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
   }
 }
 }

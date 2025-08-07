@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Search, User, Target, TrendingUp, Users, Award, MapPin, Calendar } from 'lucide-react';
+import { Search, User, Target, TrendingUp, Users, Award, MapPin, Calendar, Phone, FileText, Mail, ImageIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -68,16 +68,57 @@ const MainContent = () => {
         </div>
       </div>
 
-      {/* CO Photo Section */}
-      <div className="dashboard-card p-8">
-        <div className="flex flex-col items-center text-center gap-4">
-          <div className="bg-muted rounded-full w-32 h-32 flex items-center justify-center border-4 border-primary/30 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105">
-            <User className="h-16 w-16 text-muted-foreground" />
+      {/* CO Photo Section and Quick Links */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* CO Photo Section - Left Side */}
+        <div className="dashboard-card p-6">
+          <div className="flex gap-4 items-center">
+            <div className="rounded-lg w-32 h-36 overflow-hidden border-2 border-primary/30 shadow-lg bg-white flex-shrink-0">
+              <img 
+                src="/Colonel-Avinash-Kumar-Singh.png" 
+                alt="Colonel Avinash Kumar Singh"
+                className="w-full h-full object-cover object-top antialiased profile-image"
+                style={{ 
+                  imageRendering: 'auto',
+                  backfaceVisibility: 'hidden',
+                  transform: 'translateZ(0)',
+                  willChange: 'transform',
+                  maxWidth: '100%',
+                  height: 'auto',
+                  aspectRatio: '3/4'
+                } as React.CSSProperties}
+                loading="eager"
+                decoding="sync"
+              />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-foreground">Commanding Officer</h3>
+              <p className="text-sm text-muted-foreground">Colonel Avinash Kumar Singh</p>
+              <span className="military-badge text-xs">Active Command</span>
+            </div>
           </div>
-          <div className="space-y-2">
-            <h3 className="text-2xl font-bold text-foreground">Commanding Officer</h3>
-            <p className="text-lg text-muted-foreground">Colonel [Name]</p>
-            <span className="military-badge">Active Command</span>
+        </div>
+
+        {/* Quick Links Section - Right Side */}
+        <div className="dashboard-card p-6">
+          <h3 className="text-lg font-bold text-foreground mb-4">Quick Links</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <button className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors group">
+              <Phone className="h-5 w-5 text-primary group-hover:text-accent" />
+              <span className="text-sm font-medium">Telephone</span>
+            </button>
+            <button className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors group">
+              <FileText className="h-5 w-5 text-primary group-hover:text-accent" />
+              <span className="text-sm font-medium">Newsletter</span>
+            </button>
+            <button className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors group">
+              <Mail className="h-5 w-5 text-primary group-hover:text-accent" />
+              <span className="text-sm font-medium">Outlook</span>
+            </button>
+            <button className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors group">
+              <ImageIcon className="h-5 w-5 text-primary group-hover:text-accent" />
+              <span className="text-sm font-medium">Gallery</span>
+            </button>
           </div>
         </div>
       </div>

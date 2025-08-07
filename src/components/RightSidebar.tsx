@@ -39,33 +39,16 @@ const getEventTypeColor = (type: string) => {
 };
 
 const RightSidebar = () => {
-  const [daysLeft, setDaysLeft] = useState(0);
 
-  useEffect(() => {
-    // Calculate days until August 15, 2025 (250th day example)
-    const targetDate = new Date('2025-08-15');
-    const today = new Date();
-    const diffTime = targetDate.getTime() - today.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    setDaysLeft(Math.max(0, diffDays));
-  }, []);
 
   return (
     <aside className="w-80 p-6 space-y-6">
-      {/* Days Left Counter */}
+      {/* Days Left Counter (Static) */}
       <div className="stats-card">
         <div className="flex items-center justify-center mb-3">
           <Clock className="h-8 w-8 text-primary" />
         </div>
-        <h3 className="text-lg font-bold text-foreground mb-2">Days Left for 250</h3>
-        <div className="text-3xl font-bold text-primary mb-2">{daysLeft}</div>
-        <p className="text-sm text-muted-foreground">Days remaining</p>
-        <div className="mt-3 w-full bg-muted rounded-full h-2">
-          <div
-            className="bg-primary h-2 rounded-full transition-all duration-500"
-            style={{ width: `${Math.min(100, (365 - daysLeft) / 365 * 100)}%` }}
-          ></div>
-        </div>
+        <h3 className="text-lg font-bold text-foreground mb-2">Days left for 250 : <span className="text-primary">127</span></h3>
       </div>
 
       {/* Upcoming Events */}
