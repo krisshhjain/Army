@@ -26,112 +26,227 @@ interface ArmyModule {
   icon: React.ComponentType<any>;
   pdfPath?: string;
   description: string;
+  category: 'welfare' | 'retirement' | 'kids';
 }
 
-const modules: ArmyModule[] = [
+// Welfare & Policy modules (current ones)
+const welfareModules: ArmyModule[] = [
   { 
     id: 1, 
     name: 'Personal Documents', 
     icon: User, 
     pdfPath: '/pdfs/APPF.pdf',
-    description: 'Manage personal records and documentation'
+    description: 'Manage personal records and documentation',
+    category: 'welfare'
   },
   { 
     id: 2, 
     name: 'Part 2 Orders', 
     icon: FileText, 
     pdfPath: '/pdfs/Leave Policy.pdf',
-    description: 'Administrative orders and notifications'
+    description: 'Administrative orders and notifications',
+    category: 'welfare'
   },
   { 
     id: 3, 
     name: 'Promotion Cadres', 
     icon: TrendingUp, 
     pdfPath: '/pdfs/Promotion .pdf',
-    description: 'Promotion policies and cadre management'
+    description: 'Promotion policies and cadre management',
+    category: 'welfare'
   },
   { 
     id: 4, 
     name: 'Discharge, Retirement and Dismissal', 
     icon: UserX, 
     pdfPath: '/pdfs/ECHS.pdf',
-    description: 'Service termination procedures'
+    description: 'Service termination procedures',
+    category: 'welfare'
   },
   { 
     id: 5, 
     name: 'Medical Exam and Category', 
     icon: Stethoscope, 
     pdfPath: '/pdfs/Med cat.pdf',
-    description: 'Medical examinations and categorization'
+    description: 'Medical examinations and categorization',
+    category: 'welfare'
   },
   { 
     id: 6, 
     name: 'Pay and Allowances', 
     icon: DollarSign, 
     pdfPath: '/pdfs/Pay Scale.pdf',
-    description: 'Salary structure and allowances'
+    description: 'Salary structure and allowances',
+    category: 'welfare'
   },
   { 
     id: 7, 
     name: 'MACP', 
     icon: CreditCard, 
     pdfPath: '/pdfs/APPF.pdf',
-    description: 'Modified Assured Career Progression'
+    description: 'Modified Assured Career Progression',
+    category: 'welfare'
   },
   { 
     id: 8, 
     name: 'Leave Policy', 
     icon: Calendar, 
     pdfPath: '/pdfs/Leave Policy.pdf',
-    description: 'Leave rules and regulations'
+    description: 'Leave rules and regulations',
+    category: 'welfare'
   },
   { 
     id: 9, 
     name: 'Service', 
     icon: Users, 
     pdfPath: '/pdfs/ECHS.pdf',
-    description: 'Service conditions and rules'
+    description: 'Service conditions and rules',
+    category: 'welfare'
   },
   { 
     id: 10, 
     name: 'Disability, Compensation and Impairment', 
     icon: Shield, 
     pdfPath: '/pdfs/Med cat.pdf',
-    description: 'Disability benefits and compensation'
+    description: 'Disability benefits and compensation',
+    category: 'welfare'
   },
   { 
     id: 11, 
     name: 'AGIF', 
     icon: FileText, 
     pdfPath: '/pdfs/APPF.pdf',
-    description: 'Army Group Insurance Fund'
+    description: 'Army Group Insurance Fund',
+    category: 'welfare'
   },
   { 
     id: 12, 
     name: 'Court Case Handling', 
     icon: Scale, 
     pdfPath: '/pdfs/Leave Policy.pdf',
-    description: 'Legal procedures and court cases'
+    description: 'Legal procedures and court cases',
+    category: 'welfare'
   },
   { 
     id: 13, 
     name: 'ACWF', 
     icon: HardHat, 
     pdfPath: '/pdfs/Promotion .pdf',
-    description: 'Army Central Welfare Fund'
+    description: 'Army Central Welfare Fund',
+    category: 'welfare'
   },
   { 
     id: 14, 
     name: 'Resettlement', 
     icon: Home, 
     pdfPath: '/pdfs/ECHS.pdf',
-    description: 'Post-service resettlement programs'
+    description: 'Post-service resettlement programs',
+    category: 'welfare'
+  },
+];
+
+// Career after retirement modules (placeholder PDFs for now)
+const retirementModules: ArmyModule[] = [
+  { 
+    id: 15, 
+    name: 'Pension Schemes', 
+    icon: DollarSign, 
+    pdfPath: '/pdfs/APPF.pdf', // Update with actual PDF later
+    description: 'Post-retirement pension benefits',
+    category: 'retirement'
+  },
+  { 
+    id: 16, 
+    name: 'Second Career Options', 
+    icon: TrendingUp, 
+    pdfPath: '/pdfs/Leave Policy.pdf', // Update with actual PDF later
+    description: 'Career opportunities after service',
+    category: 'retirement'
+  },
+  { 
+    id: 17, 
+    name: 'Business Opportunities', 
+    icon: FileText, 
+    pdfPath: '/pdfs/Med cat.pdf', // Update with actual PDF later
+    description: 'Entrepreneurship and business guidance',
+    category: 'retirement'
+  },
+  { 
+    id: 18, 
+    name: 'Financial Planning', 
+    icon: CreditCard, 
+    pdfPath: '/pdfs/Promotion .pdf', // Update with actual PDF later
+    description: 'Post-retirement financial management',
+    category: 'retirement'
+  },
+];
+
+// Career for kids modules (placeholder PDFs for now)
+const kidsModules: ArmyModule[] = [
+  { 
+    id: 19, 
+    name: 'Education Schemes', 
+    icon: FileText, 
+    pdfPath: '/pdfs/ECHS.pdf', // Update with actual PDF later
+    description: 'Educational benefits for children',
+    category: 'kids'
+  },
+  { 
+    id: 20, 
+    name: 'Scholarship Programs', 
+    icon: TrendingUp, 
+    pdfPath: '/pdfs/APPF.pdf', // Update with actual PDF later
+    description: 'Scholarships and grants for kids',
+    category: 'kids'
+  },
+  { 
+    id: 21, 
+    name: 'Career Guidance', 
+    icon: Users, 
+    pdfPath: '/pdfs/Leave Policy.pdf', // Update with actual PDF later
+    description: 'Career counseling for army children',
+    category: 'kids'
+  },
+  { 
+    id: 22, 
+    name: 'Skill Development', 
+    icon: HardHat, 
+    pdfPath: '/pdfs/Med cat.pdf', // Update with actual PDF later
+    description: 'Skill building programs for youth',
+    category: 'kids'
   },
 ];
 
 const MainContent = () => {
   const [selectedModule, setSelectedModule] = useState<ArmyModule | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'welfare' | 'retirement' | 'kids'>('welfare');
+
+  const getActiveModules = () => {
+    switch (activeTab) {
+      case 'welfare':
+        return welfareModules;
+      case 'retirement':
+        return retirementModules;
+      case 'kids':
+        return kidsModules;
+      default:
+        return welfareModules;
+    }
+  };
+
+  const getTabTitle = () => {
+    switch (activeTab) {
+      case 'welfare':
+        return 'Welfare & Policy';
+      case 'retirement':
+        return 'Career after Retirement';
+      case 'kids':
+        return 'Career for Kids';
+      default:
+        return 'Welfare & Policy';
+    }
+  };
 
   const handleModuleClick = (module: ArmyModule) => {
     setSelectedModule(module);
@@ -164,15 +279,52 @@ const MainContent = () => {
 
         {/* Army Modules Section */}
         <div className="space-y-4">
+          {/* Tab Navigation */}
+          <div className="flex justify-center mb-6">
+            <div className="flex space-x-8">
+              <button
+                onClick={() => setActiveTab('welfare')}
+                className={`px-6 py-3 text-lg font-semibold transition-all duration-300 ${
+                  activeTab === 'welfare'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Welfare & Policy
+              </button>
+              <button
+                onClick={() => setActiveTab('retirement')}
+                className={`px-6 py-3 text-lg font-semibold transition-all duration-300 ${
+                  activeTab === 'retirement'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Career after Retirement
+              </button>
+              <button
+                onClick={() => setActiveTab('kids')}
+                className={`px-6 py-3 text-lg font-semibold transition-all duration-300 ${
+                  activeTab === 'kids'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Career for Kids
+              </button>
+            </div>
+          </div>
+
+          {/* Section Title */}
           <div className="mb-6">
             <h2 className="text-4xl font-extrabold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent drop-shadow-lg tracking-widest text-center">
-              Welfare & Policy
+              {getTabTitle()}
             </h2>
             <div className="mx-auto mt-2 h-2 w-40 rounded-full bg-gradient-to-r from-primary via-accent to-primary shadow-lg" />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {modules.map((module, index) => {
+            {getActiveModules().map((module, index) => {
               const IconComponent = module.icon;
               return (
                 <div 
