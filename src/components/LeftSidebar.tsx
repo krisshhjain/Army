@@ -45,9 +45,7 @@ const LeftSidebar = () => {
         <div className="p-6">
           {/* CO Details Section */}
           <div className="mb-8">
-            <h2 className="text-lg font-bold text-sidebar-foreground mb-4 border-b border-sidebar-border pb-2">
-              CO Details
-            </h2>
+
             
             {/* CO Photo and Basic Info */}
             <div className="mb-8">
