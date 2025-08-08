@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
-import { Clock, Calendar, AlertCircle, Target, Trophy, Users, Zap, Crosshair } from 'lucide-react';
+import { Clock, Calendar, AlertCircle, Target, Trophy, Users, Zap, Crosshair, ChevronLeft, ChevronRight, Image as ImageIcon } from 'lucide-react';
+import PDFViewerDialog from './PDFViewerDialog';
 
 const upcomingEvents = [
   // Competitions - Div Level
@@ -39,73 +40,167 @@ const getEventTypeColor = (type: string) => {
 };
 
 const RightSidebar = () => {
+  const [selectedDay, setSelectedDay] = useState<number | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+
+  // PDF paths for each day - you can update these later
+  const dayPDFs = {
+    1: '/pdfs/APPF.pdf', // Day 1 PDF path
+    2: '/pdfs/ECHS.pdf', // Day 2 PDF path  
+    3: '/pdfs/Leave Policy.pdf', // Day 3 PDF path
+    4: '/pdfs/Med cat.pdf' // Day 4 PDF path
+  };
+
+  // Slideshow images - you can add your images here later
+  const slideshowImages = [
+    '/placeholder.svg', // Placeholder image 1
+    '/placeholder.svg', // Placeholder image 2
+    '/placeholder.svg', // Placeholder image 3
+    '/placeholder.svg', // Placeholder image 4
+  ];
+
+  const handleDayClick = (day: number) => {
+    setSelectedDay(day);
+    setIsDialogOpen(true);
+  };
+
+  const closeDialog = () => {
+    setIsDialogOpen(false);
+    setSelectedDay(null);
+  };
+
+  const nextSlide = () => {
+    setCurrentSlideIndex((prev) => (prev + 1) % slideshowImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlideIndex((prev) => (prev - 1 + slideshowImages.length) % slideshowImages.length);
+  };
+
+  // Auto-advance slideshow every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(nextSlide, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
 
   return (
-    <aside className="w-80 p-6 space-y-6">
-      {/* Days Left Counter (Static) */}
-      <div className="stats-card">
-        <div className="flex items-center justify-center mb-3">
-          <Clock className="h-8 w-8 text-primary" />
-        </div>
-        <h3 className="text-lg font-bold text-foreground mb-2">Days left for 250 : <span className="text-primary">127</span></h3>
+    <>
+      <aside className="w-80 p-6 space-y-6">
+      {/* 250 Days Image */}
+      <div className="dashboard-card p-2 flex items-center justify-center">
+        <img 
+          src="/250.jpg" 
+          alt="250 Days"
+          className="w-full h-auto rounded-lg shadow-lg"
+          style={{ display: 'block', width: '100%', height: 'auto', maxHeight: '180px', objectFit: 'fill' }}
+        />
       </div>
 
-      {/* Upcoming Events */}
-      <div className="dashboard-card p-4">
+      {/* Schedule of Events */}
+      <div className="dashboard-card p-4 mb-4">
         <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
-          Forthcoming Imp Events
+          Schedule of Events
+        </h3>
+        <div className="grid grid-cols-2 gap-3 mb-2">
+          {[1,2,3,4].map(day => (
+            <button
+              key={day}
+              className="flex items-center justify-center p-3 rounded-lg border border-border hover:bg-muted/50 transition-colors group w-full"
+              onClick={() => handleDayClick(day)}
+            >
+              <span className="text-sm font-medium">Day {day}</span>
+            </button>
+          ))}
+        </div>
+        {/* Leave code space for PDF paths to be added later */}
+      </div>
+
+      {/* Image Slideshow Section */}
+      <div className="dashboard-card p-4">
+        <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+          <ImageIcon className="h-5 w-5 text-primary" />
+          Gallery
         </h3>
         
-        <div className="space-y-4">
-          {upcomingEvents.map((category, categoryIndex) => (
-            <div key={categoryIndex} className="space-y-2">
-              <h4 className="text-sm font-bold text-primary border-b border-border pb-1">
-                {category.category}
-              </h4>
-              <div className="space-y-2">
-                {category.events.map((event, eventIndex) => {
-                  const IconComponent = event.icon;
-                  const typeColorClass = getEventTypeColor(event.type);
-                  return (
-                    <div
-                      key={eventIndex}
-                      className="p-2 border border-border rounded-md hover:bg-muted/30 transition-colors"
-                    >
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start gap-2">
-                          <IconComponent className="h-3 w-3 mt-0.5 text-primary" />
-                          <div>
-                            <p className="font-medium text-xs text-foreground">{event.name}</p>
-                            <p className="text-xs text-muted-foreground">{event.date}</p>
-                          </div>
-                        </div>
-                        <span className={`text-xs px-2 py-0.5 rounded border ${typeColorClass}`}>
-                          {event.type}
-                        </span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ))}
+        <div className="relative">
+          <div className="relative overflow-hidden rounded-lg shadow-lg bg-muted/20">
+            <img 
+              src={slideshowImages[currentSlideIndex]} 
+              alt={`Gallery image ${currentSlideIndex + 1}`}
+              className="w-full h-48 object-cover transition-all duration-500"
+            />
+            
+            {/* Navigation Buttons */}
+            <button 
+              onClick={prevSlide}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button 
+              onClick={nextSlide}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70 transition-colors"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+          
+          {/* Slide Indicators */}
+          <div className="flex justify-center mt-3 space-x-2">
+            {slideshowImages.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentSlideIndex(index)}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  currentSlideIndex === index ? 'bg-primary' : 'bg-muted-foreground/30'
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="stats-card">
-          <div className="text-2xl font-bold text-primary">156</div>
-          <div className="text-xs text-muted-foreground">Personnel</div>
-        </div>
-        <div className="stats-card">
-          <div className="text-2xl font-bold text-military-green">98%</div>
-          <div className="text-xs text-muted-foreground">Ready</div>
-        </div>
+  {/* Unit Details Section */}
+  <div className="dashboard-card p-4">
+    <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+      <AlertCircle className="h-5 w-5 text-primary" />
+      Unit Details
+    </h3>
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-muted-foreground">Phone:</span>
+        <span className="text-foreground">__________</span>
       </div>
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-muted-foreground">Email:</span>
+        <span className="text-foreground">__________</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-muted-foreground">Pincode:</span>
+        <span className="text-foreground">__________</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-muted-foreground">Field 4:</span>
+        <span className="text-foreground">__________</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="font-medium text-muted-foreground">Field 5:</span>
+        <span className="text-foreground">__________</span>
+      </div>
+    </div>
+  </div>
     </aside>
+
+    <PDFViewerDialog
+      isOpen={isDialogOpen}
+      onClose={closeDialog}
+      title={selectedDay ? `Day ${selectedDay} Schedule` : ''}
+      pdfPath={selectedDay ? dayPDFs[selectedDay as keyof typeof dayPDFs] : undefined}
+    />
+    </>
   );
 };
 

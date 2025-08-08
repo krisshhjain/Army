@@ -12,18 +12,19 @@ const TopNavbar = () => {
       <div className="corner-accent bottom-left"></div>
       <div className="corner-accent bottom-right"></div>
       
-      <div className="flex items-center justify-between px-6 py-4 min-h-[72px] relative">
-        {/* Indian Army Logo */}
-        <div className="flex items-center text-primary-foreground">
+  <div className="flex items-center justify-between px-6 py-2 min-h-[56px] relative overflow-hidden">
+        {/* Left Logo */}
+        <div className="flex items-center text-primary-foreground ml-4">
           <img 
-            src="/Army_Logo.png" 
-            alt="Indian Army Logo" 
-            className="h-20 w-20 object-contain army-logo"
+            src="/Carnatic-nobg.png" 
+            alt="Carnatic Logo" 
+            className="h-28 w-28 object-contain army-logo"
+            style={{ maxWidth: 'none' }}
           />
         </div>
 
         {/* Center Title with Military Elements */}
-        <div className="relative flex flex-col items-center justify-center flex-1">
+  <div className="relative flex flex-col items-center justify-center flex-1 overflow-visible mt-1">
           {/* Military Decoration */}
           <div className="military-decoration"></div>
 
@@ -47,11 +48,9 @@ const TopNavbar = () => {
               <span className="military-star">★</span>
               <span className="military-star">★</span>
             </div>
-          </div>
-
-          {/* Military Slogan */}
+          </div>          {/* Military Slogan */}
           <p className="military-slogan">
-            "Service Before Self • Honor Above All"
+            "Veer Vel<span style={{ display: 'inline-block', width: '3em' }}></span>Vetri Vel"
           </p>
 
           {/* Rank Bars */}
@@ -65,11 +64,11 @@ const TopNavbar = () => {
         </div>
 
         {/* Madras Regiment Logo */}
-        <div className="flex items-center text-primary-foreground">
+        <div className="flex items-center text-primary-foreground mr-4">
           <img 
             src="/MadrasRegiment.png" 
             alt="Madras Regiment Logo" 
-            className="h-20 w-20 object-contain regiment-logo"
+            className="h-28 w-28 object-contain regiment-logo"
           />
         </div>
       </div>

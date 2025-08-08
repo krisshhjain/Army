@@ -1,109 +1,143 @@
 
 import React, { useState } from 'react';
 import { 
-  Briefcase, 
-  Users, 
-  GraduationCap, 
-  Calendar,
-  UserCheck, 
-  DollarSign, 
+  User, 
+  FileText, 
+  Phone, 
   MapPin,
-  Heart,
-  Stethoscope,
-  Shield,
-  Smartphone,
-  Lock,
-  Shirt,
-  Star,
-  Calculator,
-  FileText,
-  Home,
-  Baby,
-  Plane,
-  TrendingUp,
-  Building,
-  Gift
+  Mail,
+  Building2
 } from 'lucide-react';
 import PDFViewerDialog from './PDFViewerDialog';
 
-interface ArmyModule {
+interface CODocument {
   id: number;
   name: string;
   icon: React.ComponentType<any>;
-  pdfPath?: string; // Path to PDF in public folder
+  pdfPath?: string;
 }
 
-const modules: ArmyModule[] = [
-  { id: 1, name: 'After Retirement Career Option', icon: Briefcase, pdfPath: '/pdfs/after-retirement-career.pdf' },
-  { id: 2, name: 'Career Options', icon: TrendingUp, pdfPath: '/pdfs/career-options.pdf' },
-  { id: 3, name: 'Kids Career and Scholarships', icon: GraduationCap, pdfPath: '/pdfs/kids-career-scholarships.pdf' },
-  { id: 4, name: 'ACR Due Initiation Dates', icon: Calendar, pdfPath: '/pdfs/acr-due-dates.pdf' },
-  { id: 5, name: 'Change of Name', icon: UserCheck, pdfPath: '/pdfs/change-of-name.pdf' },
-  { id: 6, name: 'Pay Scale and Structure', icon: DollarSign, pdfPath: '/pdfs/Pay Scale.pdf' },
-  { id: 7, name: 'Unit Officers and Posting', icon: MapPin, pdfPath: '/pdfs/unit-officers-posting.pdf' },
-  { id: 8, name: 'Med Cat', icon: Heart, pdfPath: '/pdfs/Med cat.pdf' },
-  { id: 9, name: 'Annual Medicals', icon: Stethoscope, pdfPath: '/pdfs/ECHS.pdf' },
-  { id: 10, name: 'APPF', icon: Shield, pdfPath: '/pdfs/APPF.pdf' },
-  { id: 11, name: 'Banned Apps', icon: Smartphone, pdfPath: '/pdfs/banned-apps.pdf' },
-  { id: 12, name: 'Cyber Security Policy', icon: Lock, pdfPath: '/pdfs/cyber-security-policy.pdf' },
-  { id: 13, name: 'Army Uniform', icon: Shirt, pdfPath: '/pdfs/army-uniform.pdf' },
-  { id: 14, name: 'Armed Forces Rank Structure', icon: Star, pdfPath: '/pdfs/rank-structure.pdf' },
-  { id: 15, name: 'Income Tax Info', icon: Calculator, pdfPath: '/pdfs/income-tax-info.pdf' },
-  { id: 16, name: 'Claims and Allowances', icon: FileText, pdfPath: '/pdfs/claims-allowances.pdf' },
-  { id: 17, name: 'Leave Policy', icon: Calendar, pdfPath: '/pdfs/Leave Policy.pdf' },
-  { id: 18, name: 'Marriage Pub Documents', icon: Home, pdfPath: '/pdfs/marriage-pub-docs.pdf' },
-  { id: 19, name: 'Birth Death', icon: Baby, pdfPath: '/pdfs/birth-death.pdf' },
-  { id: 20, name: 'TD (Temporary Duty)', icon: Plane, pdfPath: '/pdfs/td.pdf' },
-  { id: 21, name: 'Promotion', icon: TrendingUp, pdfPath: '/pdfs/Promotion .pdf' },
-  { id: 22, name: 'HRA', icon: Building, pdfPath: '/pdfs/hra.pdf' },
-  { id: 23, name: 'AGIF', icon: Gift, pdfPath: '/pdfs/agif.pdf' },
+const coDocuments: CODocument[] = [
+  { id: 1, name: 'KRAs', icon: User, pdfPath: '/pdfs/KRA.pdf' },
+  { id: 2, name: 'Unit History', icon: FileText, pdfPath: '/pdfs/Med cat.pdf' },
+  { id: 3, name: 'Posted Officers', icon: FileText, pdfPath: '/pdfs/Posted officers.pdf' },
+  { id: 4, name: 'Unit Officers & Postings', icon: FileText, pdfPath: '/pdfs/Promotion .pdf' },
+  { id: 5, name: 'Awards & Citation', icon: FileText, pdfPath: '/pdfs/Leave Policy.pdf' },
 ];
 
 const LeftSidebar = () => {
-  const [selectedModule, setSelectedModule] = useState<ArmyModule | null>(null);
+  const [selectedDocument, setSelectedDocument] = useState<CODocument | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const handleModuleClick = (module: ArmyModule) => {
-    setSelectedModule(module);
+  const handleDocumentClick = (document: CODocument) => {
+    setSelectedDocument(document);
     setIsDialogOpen(true);
   };
 
   const closeDialog = () => {
     setIsDialogOpen(false);
-    setSelectedModule(null);
+    setSelectedDocument(null);
   };
 
   return (
     <>
       <aside className="bg-sidebar border-r border-sidebar-border w-80 min-h-screen">
         <div className="p-6">
-          <h2 className="text-lg font-bold text-sidebar-foreground mb-6 border-b border-sidebar-border pb-2">
-            Army Modules
-          </h2>
-          
-          <div className="relative">
-            <nav className="space-y-1 max-h-[calc(100vh-120px)] overflow-y-auto sidebar-scroll pr-2">
-              {modules.map((module) => {
-                const IconComponent = module.icon;
+          {/* CO Details Section */}
+          <div className="mb-8">
+            <h2 className="text-lg font-bold text-sidebar-foreground mb-4 border-b border-sidebar-border pb-2">
+              CO Details
+            </h2>
+            
+            {/* CO Photo and Basic Info */}
+            <div className="mb-8">
+              <div className="flex gap-6 items-center mb-6">
+                <div className="rounded-lg w-28 h-36 overflow-hidden border-2 border-primary/30 shadow-lg bg-white flex-shrink-0">
+                  <img 
+                    src="/Colonel-Avinash-Kumar-Singh.jpg" 
+                    alt="Colonel Avinash Kumar Singh"
+                    className="w-full h-full object-cover object-top"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-base font-bold text-sidebar-foreground">Colonel Avinash Kumar Singh</h3>
+                  <p className="text-sm text-muted-foreground">Commanding Officer</p>
+                  <span className="military-badge text-sm">Active Command</span>
+                </div>
+              </div>
+            </div>
+
+            {/* CO Documents */}
+            <div className="space-y-2">
+              {coDocuments.map((document) => {
+                const IconComponent = document.icon;
                 return (
                   <div
-                    key={module.id}
-                    className="module-item cursor-pointer group p-2 rounded-md hover:bg-sidebar-accent transition-colors"
-                    onClick={() => handleModuleClick(module)}
+                    key={document.id}
+                    className="cursor-pointer group p-3 rounded-md hover:bg-sidebar-accent transition-colors border border-sidebar-border"
+                    onClick={() => handleDocumentClick(document)}
                   >
                     <div className="flex items-center gap-3">
-                      <span className="text-sidebar-primary font-bold text-xs bg-sidebar-primary/10 px-2 py-1 rounded-full min-w-[24px] text-center">
-                        {module.id}
-                      </span>
                       <IconComponent className="h-4 w-4 text-sidebar-foreground group-hover:text-sidebar-primary transition-colors flex-shrink-0" />
                       <span className="text-sidebar-foreground group-hover:text-sidebar-accent-foreground font-medium text-sm leading-tight">
-                        {module.name}
+                        {document.name}
                       </span>
                     </div>
                   </div>
                 );
               })}
-            </nav>
+            </div>
+          </div>
+
+          {/* Location Details Section */}
+          <div className="mb-8">
+            <h2 className="text-lg font-bold text-sidebar-foreground mb-4 border-b border-sidebar-border pb-2">
+              Location Details
+            </h2>
+            
+            <div className="space-y-3">
+              <div className="flex items-start gap-3 p-3 rounded-md bg-sidebar-accent/50">
+                <Building2 className="h-4 w-4 text-sidebar-primary mt-1 flex-shrink-0" />
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-sidebar-foreground">Unit Headquarters</p>
+                  <p className="text-xs font-bold text-sidebar-primary">Trivandrum</p>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex items-start gap-3 p-3 rounded-md bg-sidebar-accent/30">
+                  <Building2 className="h-4 w-4 text-sidebar-primary mt-1 flex-shrink-0" />
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-sidebar-foreground">91 INF BDE</p>
+                    <p className="text-xs font-bold text-sidebar-primary">CDR BRIG ANURAG UPADHAYA</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 rounded-md bg-sidebar-accent/30">
+                  <Building2 className="h-4 w-4 text-sidebar-primary mt-1 flex-shrink-0" />
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-sidebar-foreground">54 DIV</p>
+                    <p className="text-xs font-bold text-sidebar-primary">MAJ GEN R D SHARMA</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 rounded-md bg-sidebar-accent/30">
+                  <Building2 className="h-4 w-4 text-sidebar-primary mt-1 flex-shrink-0" />
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-sidebar-foreground">21 CORPS</p>
+                    <p className="text-xs font-bold text-sidebar-primary">LT GEN PRIT PAL SINGH</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-start gap-3 p-3 rounded-md bg-sidebar-accent/30">
+                  <Building2 className="h-4 w-4 text-sidebar-primary mt-1 flex-shrink-0" />
+                  <div className="space-y-1">
+                    <p className="text-xs font-medium text-sidebar-foreground">SOUTHERN COMMAND</p>
+                    <p className="text-xs font-bold text-sidebar-primary">LT GEN DHIRAJ SETH, PVSM, AVSM</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </aside>
@@ -111,8 +145,8 @@ const LeftSidebar = () => {
       <PDFViewerDialog
         isOpen={isDialogOpen}
         onClose={closeDialog}
-        title={selectedModule?.name || ''}
-        pdfPath={selectedModule?.pdfPath}
+        title={selectedDocument?.name || ''}
+        pdfPath={selectedDocument?.pdfPath}
       />
     </>
   );
