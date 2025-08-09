@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   User, 
@@ -59,7 +58,7 @@ const LeftSidebar = () => {
                 </div>
                 <div className="space-y-1">
                   <h3 className="text-base font-bold text-sidebar-foreground">Colonel Avinash Kumar Singh</h3>
-                  <p className="text-sm text-muted-foreground">Commanding Officer</p>
+                  <p className="text-sm font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded inline-block">Commanding Officer</p>
                 </div>
               </div>
             </div>

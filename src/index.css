@@ -463,9 +463,9 @@
   /* Military Stars */
   .military-stars {
     position: absolute;
-    top: 20px;
-    left: -25px;
-    transform: none;
+    top: 50%;
+    left: -60px;
+    transform: translateY(-50%);
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -486,9 +486,9 @@
   /* Right side stars */
   .military-stars-right {
     position: absolute;
-    top: 20px;
-    right: -25px;
-    transform: none;
+    top: 50%;
+    right: -60px;
+    transform: translateY(-50%);
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -520,7 +520,7 @@
   /* Military decorative elements */
   .military-decoration {
     position: absolute;
-    top: -18px;
+    top: -8px;
     left: 50%;
     transform: translateX(-50%);
     width: 110px;
@@ -540,7 +540,7 @@
     content: '★';
     position: absolute;
     left: -18px;
-    top: 0px;
+    top: -3px;
     color: hsl(var(--accent));
     font-size: 22px;
     animation: twinkle 2s ease-in-out infinite;
@@ -550,7 +550,7 @@
     content: '★';
     position: absolute;
     right: -18px;
-    top: 0px;
+    top: -3px;
     color: hsl(var(--accent));
     font-size: 22px;
     animation: twinkle 2s ease-in-out infinite 1s;
