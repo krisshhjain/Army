@@ -2,7 +2,7 @@ import React from 'react';
 
 const TopNavbar = () => {
   return (
-    <header className="futuristic-military-bg sticky top-0 z-50 backdrop-blur-sm">
+    <header className="futuristic-military-bg sticky top-0 z-50 backdrop-blur-sm" role="banner" aria-label="PRAGATI site header">
       {/* Tech Grid Pattern */}
       <div className="tech-grid"></div>
       
@@ -12,14 +12,23 @@ const TopNavbar = () => {
       <div className="corner-accent bottom-left"></div>
       <div className="corner-accent bottom-right"></div>
       
-  <div className="flex items-center justify-between px-6 py-3 min-h-[72px] relative overflow-hidden">
+  <div className="flex items-center justify-between px-6 py-1 min-h-[56px] relative overflow-hidden">
         {/* Left Logo */}
         <div className="flex items-center text-primary-foreground ml-4">
           <img 
             src="/Carnatic-nobg.png" 
             alt="Carnatic Logo" 
-            className="h-32 w-32 object-contain army-logo"
-            style={{ maxWidth: 'none' }}
+            width={140}
+            height={140}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
+            className="h-35 w-35 object-contain army-logo"
+            style={{ 
+              maxWidth: 'none',
+              filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.6)) drop-shadow(0 0 20px rgba(255, 215, 0, 0.4))',
+              animation: 'shimmer 3s ease-in-out infinite'
+            }}
           />
         </div>
 
@@ -31,17 +40,17 @@ const TopNavbar = () => {
           {/* Entire content block with stars on left and right */}
           <div className="relative">
             {/* Left Stars - positioned for entire block */}
-            <div className="absolute top-1/2 left-[-80px] transform -translate-y-1/2 flex flex-col gap-1 z-10">
-              <span className="text-yellow-400 text-lg animate-pulse">★</span>
-              <span className="text-yellow-400 text-lg animate-pulse" style={{animationDelay: '0.7s'}}>★</span>
-              <span className="text-yellow-400 text-lg animate-pulse" style={{animationDelay: '1.4s'}}>★</span>
+            <div className="absolute top-1/2 left-[-64px] -translate-y-1/2 z-10 hidden lg:flex flex-col gap-1" aria-hidden>
+              <span className="text-yellow-400 text-lg military-star">★</span>
+              <span className="text-yellow-400 text-lg military-star" style={{animationDelay: '0.7s'}}>★</span>
+              <span className="text-yellow-400 text-lg military-star" style={{animationDelay: '1.4s'}}>★</span>
             </div>
 
             {/* Right Stars - positioned for entire block */}
-            <div className="absolute top-1/2 right-[-80px] transform -translate-y-1/2 flex flex-col gap-1 z-10">
-              <span className="text-yellow-400 text-lg animate-pulse" style={{animationDelay: '0.3s'}}>★</span>
-              <span className="text-yellow-400 text-lg animate-pulse" style={{animationDelay: '1s'}}>★</span>
-              <span className="text-yellow-400 text-lg animate-pulse" style={{animationDelay: '1.7s'}}>★</span>
+            <div className="absolute top-1/2 right-[-64px] -translate-y-1/2 z-10 hidden lg:flex flex-col gap-1" aria-hidden>
+              <span className="text-yellow-400 text-lg military-star" style={{animationDelay: '0.3s'}}>★</span>
+              <span className="text-yellow-400 text-lg military-star" style={{animationDelay: '1s'}}>★</span>
+              <span className="text-yellow-400 text-lg military-star" style={{animationDelay: '1.7s'}}>★</span>
             </div>
 
             {/* All content centered */}
@@ -77,8 +86,17 @@ const TopNavbar = () => {
         <div className="flex items-center text-primary-foreground mr-9">
           <img 
             src="/Mr.png" 
-            alt="Madras Regiment Logo" 
+            alt="Madras Regiment Emblem" 
+            width={140}
+            height={140}
+            loading="eager"
+            decoding="async"
+            fetchPriority="high"
             className="h-36 w-36 object-contain regiment-logo"
+            style={{
+              filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.6)) drop-shadow(0 0 20px rgba(255, 215, 0, 0.4))',
+              animation: 'shimmer 3s ease-in-out infinite'
+            }}
           />
         </div>
       </div>

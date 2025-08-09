@@ -53,6 +53,7 @@
     --sidebar-accent-foreground: 0 0% 95%;
     --sidebar-border: 220 40% 35%;
     --sidebar-ring: 45 95% 50%;
+  }
 
   .dark {
     --background: 220 25% 8%;
@@ -315,8 +316,7 @@
     pointer-events: none;
   }
 
-  .corner-accent::before,
-  .corner-accent::after {
+  .corner-accent::before {
     content: '';
     position: absolute;
     width: 8px;
@@ -475,8 +475,9 @@
   .military-star {
     color: hsl(var(--accent));
     font-size: 16px;
-    animation: star-twinkle 2s ease-in-out infinite;
+    animation: star-twinkle 2.4s ease-in-out infinite;
     filter: drop-shadow(0 0 4px hsl(var(--accent) / 0.6));
+    will-change: transform, opacity;
   }
 
   .military-star:nth-child(1) { animation-delay: 0s; }
@@ -507,20 +508,32 @@
   .military-stars-right .military-star:nth-child(3) { animation-delay: 1.7s; }
 
   @keyframes star-twinkle {
-    0%, 100% { 
-      opacity: 0.4; 
-      transform: scale(0.8) rotate(0deg);
+    0% {
+      opacity: 0.55;
+      transform: translateY(-2px) scale(0.9) rotate(0deg);
     }
-    50% { 
-      opacity: 1; 
-      transform: scale(1.1) rotate(180deg);
+    25% {
+      opacity: 0.85;
+      transform: translateY(0) scale(1) rotate(90deg);
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(2px) scale(1.08) rotate(180deg);
+    }
+    75% {
+      opacity: 0.85;
+      transform: translateY(0) scale(1) rotate(270deg);
+    }
+    100% {
+      opacity: 0.55;
+      transform: translateY(-2px) scale(0.9) rotate(360deg);
     }
   }
 
   /* Military decorative elements */
   .military-decoration {
     position: absolute;
-    top: -8px;
+    top: 2px;
     left: 50%;
     transform: translateX(-50%);
     width: 110px;
@@ -561,7 +574,6 @@
     50% { opacity: 1; transform: scale(1.2); }
   }
 }
-}
 
 @layer utilities {
   .gradient-text {
@@ -596,6 +608,22 @@
   50% { 
     transform: scaleY(1.5); 
     opacity: 1; 
+  }
+}
+
+/* Logo Shimmer Animation */
+@keyframes shimmer {
+  0% {
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3)) drop-shadow(0 0 10px rgba(255, 215, 0, 0.2));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 25px rgba(255, 215, 0, 0.6)) drop-shadow(0 0 35px rgba(255, 215, 0, 0.4));
+    transform: scale(1.02);
+  }
+  100% {
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3)) drop-shadow(0 0 10px rgba(255, 215, 0, 0.2));
+    transform: scale(1);
   }
 }
 
@@ -638,6 +666,16 @@
 .sound-wave-5 { animation-delay: 400ms; }
 .sound-wave-6 { animation-delay: 500ms; }
 .sound-wave-7 { animation-delay: 600ms; }
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
 @keyframes slide-in-from-bottom-2 {
   from {
     transform: translateY(8px);

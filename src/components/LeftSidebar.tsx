@@ -49,7 +49,7 @@ const LeftSidebar = () => {
             {/* CO Photo and Basic Info */}
             <div className="mb-8">
               <div className="flex flex-col items-center text-center mb-6">
-                <div className="rounded-lg w-28 h-36 overflow-hidden border-2 border-primary/30 shadow-lg bg-white mb-4">
+                <div className="rounded-lg w-36 h-44 overflow-hidden border-2 border-primary/30 shadow-lg bg-white mb-4">
                   <img 
                     src="/Colonel-Avinash-Kumar-Singh.jpg" 
                     alt="Colonel Avinash Kumar Singh"
