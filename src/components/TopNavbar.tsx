@@ -18,7 +18,7 @@ const TopNavbar = () => {
           <img 
             src="/Carnatic-nobg.png" 
             alt="Carnatic Logo" 
-            className="h-28 w-28 object-contain army-logo"
+            className="h-32 w-32 object-contain army-logo"
             style={{ maxWidth: 'none' }}
           />
         </div>
@@ -64,11 +64,11 @@ const TopNavbar = () => {
         </div>
 
         {/* Madras Regiment Logo */}
-        <div className="flex items-center text-primary-foreground mr-4">
+        <div className="flex items-center text-primary-foreground mr-9">
           <img 
-            src="/MadrasRegiment.png" 
+            src="/Mr.png" 
             alt="Madras Regiment Logo" 
-            className="h-28 w-28 object-contain regiment-logo"
+            className="h-36 w-36 object-contain regiment-logo"
           />
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Bot, X, Send, FileText } from 'lucide-react';
+import { Bot, X, Send, FileText, Mic, MicOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import * as pdfjsLib from 'pdfjs-dist';
@@ -129,12 +129,20 @@ const pdfData: PDFData[] = [
 const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = ({ onOpenPDF }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Hi Thambi, Need help? 🪖 I'm Sainik Sahayak, your army document assistant!", isUser: false }
+    { id: 1, text: "Hi Thambi, Need help? 🪖 I'm Sainik Sahayak, your army document assistant! You can type or speak to me in Hindi or English.", isUser: false }
   ]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [pdfTexts, setPdfTexts] = useState<Map<string, string>>(new Map());
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [listeningProgress, setListeningProgress] = useState(0);
+  const [voiceActivity, setVoiceActivity] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const listeningTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const voiceActivityRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize Fuse.js for fuzzy search
   const fuse = new Fuse(pdfData, {
@@ -150,6 +158,169 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Initialize speech recognition
+  useEffect(() => {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      setSpeechSupported(true);
+      
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-IN'; // English (India) - will transliterate Hindi words to English alphabets
+      
+      recognition.onstart = () => {
+        setIsListening(true);
+        setListeningProgress(0);
+        setVoiceActivity(false);
+        
+        // Start 3-second countdown
+        listeningTimeoutRef.current = setTimeout(() => {
+          if (recognitionRef.current) {
+            recognitionRef.current.stop();
+          }
+        }, 3000);
+        
+        // Animate progress bar
+        const progressInterval = setInterval(() => {
+          setListeningProgress(prev => {
+            if (prev >= 100) {
+              clearInterval(progressInterval);
+              return 100;
+            }
+            return prev + (100 / 30); // 30 updates over 3 seconds
+          });
+        }, 100);
+        
+        progressIntervalRef.current = progressInterval;
+        
+        // Simulate voice activity detection (random intervals when listening)
+        const activityInterval = setInterval(() => {
+          setVoiceActivity(prev => !prev);
+        }, Math.random() * 500 + 200); // Random interval between 200-700ms
+        
+        voiceActivityRef.current = activityInterval;
+      };
+      
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setInputText(prev => prev + ' ' + transcript);
+        // Trigger voice activity on actual speech
+        setVoiceActivity(true);
+      };
+      
+      recognition.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+        
+        // Show user-friendly error message based on error type
+        let errorMessage = '';
+        switch (event.error) {
+          case 'network':
+            errorMessage = 'Speech recognition needs internet connection. Please check your connection and try again.';
+            break;
+          case 'not-allowed':
+            errorMessage = 'Microphone access denied. Please allow microphone access in your browser settings.';
+            break;
+          case 'no-speech':
+            errorMessage = 'No speech detected. Please try speaking again.';
+            break;
+          case 'audio-capture':
+            errorMessage = 'Microphone not found. Please check your microphone connection.';
+            break;
+          case 'service-not-allowed':
+            errorMessage = 'Speech service not available. Please try typing instead.';
+            break;
+          default:
+            errorMessage = 'Speech recognition failed. Please try typing your message.';
+        }
+        
+        // Add error message to chat
+        const errorBotMessage: Message = {
+          id: Date.now(),
+          text: `⚠️ ${errorMessage}`,
+          isUser: false
+        };
+        setMessages(prev => [...prev, errorBotMessage]);
+        
+        // Clear timeout on error
+        if (listeningTimeoutRef.current) {
+          clearTimeout(listeningTimeoutRef.current);
+          listeningTimeoutRef.current = null;
+        }
+        if (progressIntervalRef.current) {
+          clearInterval(progressIntervalRef.current);
+          progressIntervalRef.current = null;
+        }
+        if (voiceActivityRef.current) {
+          clearInterval(voiceActivityRef.current);
+          voiceActivityRef.current = null;
+        }
+        setVoiceActivity(false);
+        setListeningProgress(0);
+      };
+      
+      recognition.onend = () => {
+        setIsListening(false);
+        setListeningProgress(0);
+        setVoiceActivity(false);
+        if (listeningTimeoutRef.current) {
+          clearTimeout(listeningTimeoutRef.current);
+          listeningTimeoutRef.current = null;
+        }
+        if (progressIntervalRef.current) {
+          clearInterval(progressIntervalRef.current);
+          progressIntervalRef.current = null;
+        }
+        if (voiceActivityRef.current) {
+          clearInterval(voiceActivityRef.current);
+          voiceActivityRef.current = null;
+        }
+      };
+      
+      recognitionRef.current = recognition;
+    }
+  }, []);
+
+  const startListening = () => {
+    if (recognitionRef.current && speechSupported) {
+      try {
+        recognitionRef.current.start();
+      } catch (error) {
+        console.error('Failed to start speech recognition:', error);
+        setIsListening(false);
+        
+        const errorMessage: Message = {
+          id: Date.now(),
+          text: '⚠️ Could not start voice input. Please ensure you have internet connection and microphone access.',
+          isUser: false
+        };
+        setMessages(prev => [...prev, errorMessage]);
+      }
+    }
+  };
+
+  const stopListening = () => {
+    if (recognitionRef.current && isListening) {
+      recognitionRef.current.stop();
+      if (listeningTimeoutRef.current) {
+        clearTimeout(listeningTimeoutRef.current);
+        listeningTimeoutRef.current = null;
+      }
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
+      if (voiceActivityRef.current) {
+        clearInterval(voiceActivityRef.current);
+        voiceActivityRef.current = null;
+      }
+      setVoiceActivity(false);
+      setListeningProgress(0);
+    }
+  };
 
   // Extract text from PDF with OCR fallback for image-based PDFs
   const extractPDFText = async (pdfPath: string): Promise<string> => {
@@ -224,8 +395,43 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
     loadPDFTexts();
   }, []);
 
+  const normalizeText = (text: string): string => {
+    // Convert common Hindi speech-to-text transliterations to English keywords
+    const hindiToEnglish: { [key: string]: string } = {
+      'naukri': 'job',
+      'nokri': 'job',
+      'kaam': 'job',
+      'rozgar': 'job',
+      'chutti': 'leave',
+      'avkash': 'leave',
+      'tankhwah': 'pay',
+      'vetan': 'pay',
+      'paisa': 'pay',
+      'dawai': 'medical',
+      'ilaj': 'medical',
+      'aspatal': 'medical',
+      'swasthya': 'medical',
+      'bacche': 'kids',
+      'bachpan': 'kids',
+      'teraki': 'promotion',
+      'utkarsh': 'promotion',
+      'madad': 'support',
+      'sahayata': 'support',
+      'sevanivritti': 'retirement'
+    };
+
+    let normalizedText = text.toLowerCase();
+    
+    // Replace Hindi words with English equivalents
+    Object.entries(hindiToEnglish).forEach(([hindi, english]) => {
+      normalizedText = normalizedText.replace(new RegExp(hindi, 'gi'), english);
+    });
+    
+    return normalizedText;
+  };
+
   const searchPDFs = (query: string): PDFData | null => {
-    const searchQuery = query.toLowerCase();
+    const searchQuery = normalizeText(query);
     
     // First try exact keyword matching
     for (const pdf of pdfData) {
@@ -326,7 +532,7 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
       )}
 
       {isOpen && (
-        <div className="bg-white rounded-lg shadow-2xl border border-border w-96 h-[500px] flex flex-col animate-in slide-in-from-bottom-2 duration-300">
+        <div className="bg-white rounded-lg shadow-2xl border border-border w-96 h-[500px] flex flex-col animate-in slide-in-from-bottom-2 duration-300 relative overflow-hidden">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-border bg-primary/5 rounded-t-lg">
             <div className="flex items-center gap-2">
@@ -342,6 +548,51 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
               <X className="h-4 w-4" />
             </Button>
           </div>
+
+          {/* Futuristic gradient overlay when listening */}
+          {isListening && (
+            <div className="absolute bottom-0 left-0 right-0 h-20 pointer-events-none z-10">
+              <div 
+                className={`w-full h-full transition-all duration-500 ${
+                  voiceActivity ? 'opacity-90' : 'opacity-60'
+                }`}
+                style={{
+                  background: 'linear-gradient(90deg, #FF6B35, #F7931E, #FFD23F, #06FFA5, #1FB3D3, #4285F4, #FF6B35)',
+                  backgroundSize: voiceActivity ? '300% 100%' : '100% 100%',
+                  animation: voiceActivity ? 'gradientShift 2s linear infinite' : 'none'
+                }}
+              />
+              
+              {/* Voice activity indicators */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="flex space-x-2">
+                  {Array.from({ length: 8 }, (_, i) => (
+                    <div
+                      key={i}
+                      className={`w-1 bg-white/40 rounded-full transition-all duration-300 ${
+                        voiceActivity ? 'voice-wave' : ''
+                      }`}
+                      style={{ 
+                        height: voiceActivity 
+                          ? `${Math.random() * 25 + 8}px` 
+                          : '6px',
+                        animationDelay: `${i * 100}ms`
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Progress and status */}
+              <div className="absolute bottom-2 left-4 right-4">
+                <div className="text-center">
+                  <span className="text-xs text-white font-medium drop-shadow-sm">
+                    🎤 Listening... {Math.ceil((100 - listeningProgress) / 33)}s remaining
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
@@ -393,10 +644,21 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Ask about documents..."
+                placeholder="Ask about documents or speak..."
                 className="flex-1"
                 disabled={isLoading}
               />
+              {speechSupported && (
+                <Button
+                  onClick={isListening ? stopListening : startListening}
+                  disabled={isLoading}
+                  variant={isListening ? "default" : "outline"}
+                  size="sm"
+                  className={`px-3 ${isListening ? 'bg-red-500 hover:bg-red-600' : ''}`}
+                >
+                  {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                </Button>
+              )}
               <Button
                 onClick={handleSendMessage}
                 disabled={isLoading || !inputText.trim()}
@@ -406,6 +668,13 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
                 <Send className="h-4 w-4" />
               </Button>
             </div>
+            {speechSupported && (
+              <div className="mt-1 text-center">
+                <span className="text-xs text-muted-foreground">
+                  💡 Voice input requires internet connection
+                </span>
+              </div>
+            )}
           </div>
         </div>
       )}

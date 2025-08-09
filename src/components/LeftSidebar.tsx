@@ -49,18 +49,17 @@ const LeftSidebar = () => {
             
             {/* CO Photo and Basic Info */}
             <div className="mb-8">
-              <div className="flex gap-6 items-center mb-6">
-                <div className="rounded-lg w-28 h-36 overflow-hidden border-2 border-primary/30 shadow-lg bg-white flex-shrink-0">
+              <div className="flex flex-col items-center text-center mb-6">
+                <div className="rounded-lg w-28 h-36 overflow-hidden border-2 border-primary/30 shadow-lg bg-white mb-4">
                   <img 
                     src="/Colonel-Avinash-Kumar-Singh.jpg" 
                     alt="Colonel Avinash Kumar Singh"
                     className="w-full h-full object-cover object-top"
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <h3 className="text-base font-bold text-sidebar-foreground">Colonel Avinash Kumar Singh</h3>
                   <p className="text-sm text-muted-foreground">Commanding Officer</p>
-                  <span className="military-badge text-sm">Active Command</span>
                 </div>
               </div>
             </div>
@@ -123,7 +122,7 @@ const LeftSidebar = () => {
                   <Building2 className="h-4 w-4 text-sidebar-primary mt-1 flex-shrink-0" />
                   <div className="space-y-1">
                     <p className="text-xs font-medium text-sidebar-foreground">21 CORPS</p>
-                    <p className="text-xs font-bold text-sidebar-primary">LT GEN PRIT PAL SINGH</p>
+                    <p className="text-xs font-bold text-sidebar-primary">LT GEN ANIRUDH CHAUHAN, AVSM, SM</p>
                   </div>
                 </div>
                 

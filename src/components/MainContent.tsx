@@ -253,6 +253,24 @@ const MainContent = () => {
   return (
     <>
       <main className="flex-1 p-6 space-y-6">
+        {/* PRAGATI Header */}
+        <div className="text-center py-4 mb-4">
+          <div className="relative">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-500 via-yellow-500 to-green-500 bg-clip-text text-transparent">
+              PRAGATI
+            </h1>
+            <div className="absolute -top-1 -left-1 w-full h-full text-4xl font-bold text-primary/10 -z-10">
+              PRAGATI
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground mt-1 font-medium">
+            Guide For You
+          </p>
+          <div className="flex justify-center mt-2">
+            <div className="w-16 h-0.5 bg-gradient-to-r from-orange-500 via-yellow-500 to-green-500 rounded-full"></div>
+          </div>
+        </div>
+
         {/* Army Modules Section */}
         <div className="space-y-4">
           {/* Tab Navigation */}
