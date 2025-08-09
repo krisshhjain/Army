@@ -253,22 +253,6 @@ const MainContent = () => {
   return (
     <>
       <main className="flex-1 p-6 space-y-6">
-        {/* Search Bar */}
-        <div className="dashboard-card p-4">
-          <div className="flex gap-4 items-center">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input
-                placeholder="Search modules, documents, personnel..."
-                className="pl-10 bg-background border-border"
-              />
-            </div>
-            <Button className="command-button">
-              Search
-            </Button>
-          </div>
-        </div>
-
         {/* Army Modules Section */}
         <div className="space-y-4">
           {/* Tab Navigation */}

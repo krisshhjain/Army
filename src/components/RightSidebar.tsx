@@ -164,31 +164,31 @@ const RightSidebar = () => {
       </div>
 
   {/* Unit Details Section */}
-  <div className="dashboard-card p-4">
-    <h3 className="text-lg font-bold text-foreground mb-4 flex items-center gap-2">
+  <div className="dashboard-card p-5">
+    <h3 className="text-lg font-bold text-foreground mb-5 flex items-center gap-2 border-b border-border pb-2">
       <AlertCircle className="h-5 w-5 text-primary" />
       Unit Details
     </h3>
-    <div className="space-y-2">
-      <div className="flex items-center justify-between">
-        <span className="font-medium text-muted-foreground">Ph no.:</span>
-        <span className="text-foreground">9911377908</span>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+        <span className="font-semibold text-foreground">Ph no.:</span>
+        <span className="text-primary font-medium">9911377908</span>
       </div>
-      <div className="flex items-center justify-between">
-        <span className="font-medium text-muted-foreground">Email:</span>
-        <span className="text-foreground text-xs">Goondas1776@gmail.com</span>
+      <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+        <span className="font-semibold text-foreground">Email:</span>
+        <span className="text-primary font-medium text-sm">Goondas1776@gmail.com</span>
       </div>
-      <div className="flex items-center justify-between">
-        <span className="font-medium text-muted-foreground">Pincode:</span>
-        <span className="text-foreground">695012</span>
+      <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+        <span className="font-semibold text-foreground">Pincode:</span>
+        <span className="text-primary font-medium">695012</span>
       </div>
-      <div className="flex items-center justify-between">
-        <span className="font-medium text-muted-foreground">Exchange:</span>
-        <span className="text-foreground text-xs">Internal communication</span>
+      <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+        <span className="font-semibold text-foreground">Exchange:</span>
+        <span className="text-primary font-medium text-sm">Internal communication</span>
       </div>
-      <div className="flex items-center justify-between">
-        <span className="font-medium text-muted-foreground">Imp no.:</span>
-        <span className="text-foreground">9541256129</span>
+      <div className="flex items-center justify-between p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
+        <span className="font-semibold text-foreground">Imp no.:</span>
+        <span className="text-primary font-medium">9541256129</span>
       </div>
     </div>
   </div>
