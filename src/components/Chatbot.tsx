@@ -5,10 +5,56 @@ import { Input } from '@/components/ui/input';
 import * as pdfjsLib from 'pdfjs-dist';
 import Fuse from 'fuse.js';
 import { createWorker } from 'tesseract.js';
+import { pdfSearchData, type PDFData } from '@/data/pdfSearchData';
 
-// Set worker path for pdfjs - use CDN with proper fallback
-const workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.js`;
-pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
+// Configure PDF.js worker to avoid CORS issues
+// Use local worker file from public directory
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/pdf.worker.min.mjs';
+
+// Extend Window interface for speech recognition
+declare global {
+  interface Window {
+    SpeechRecognition: new () => SpeechRecognition;
+    webkitSpeechRecognition: new () => SpeechRecognition;
+  }
+}
+
+interface SpeechRecognition extends EventTarget {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  start(): void;
+  stop(): void;
+  onstart: ((this: SpeechRecognition, ev: Event) => unknown) | null;
+  onresult: ((this: SpeechRecognition, ev: SpeechRecognitionEvent) => unknown) | null;
+  onerror: ((this: SpeechRecognition, ev: SpeechRecognitionErrorEvent) => unknown) | null;
+  onend: ((this: SpeechRecognition, ev: Event) => unknown) | null;
+}
+
+interface SpeechRecognitionEvent extends Event {
+  results: SpeechRecognitionResultList;
+}
+
+interface SpeechRecognitionErrorEvent extends Event {
+  error: string;
+}
+
+interface SpeechRecognitionResultList {
+  length: number;
+  item(index: number): SpeechRecognitionResult;
+  [index: number]: SpeechRecognitionResult;
+}
+
+interface SpeechRecognitionResult {
+  length: number;
+  item(index: number): SpeechRecognitionAlternative;
+  [index: number]: SpeechRecognitionAlternative;
+}
+
+interface SpeechRecognitionAlternative {
+  transcript: string;
+  confidence: number;
+}
 
 interface Message {
   id: number;
@@ -16,120 +62,22 @@ interface Message {
   isUser: boolean;
   pdfPath?: string;
   pdfTitle?: string;
+  pdfOptions?: PDFData[];
+  userTypeSelection?: boolean;
 }
 
-interface PDFData {
-  path: string;
-  title: string;
-  text: string;
-  keywords: string[];
-}
-
-// Define PDF data with comprehensive keywords
-const pdfData: PDFData[] = [
-  // Welfare & Policy PDFs
-  {
-    path: '/pdfs/APPF.pdf',
-    title: 'Personal Documents (APPF)',
-    text: '',
-    keywords: ['personal', 'documents', 'appf', 'records', 'documentation', 'identity', 'profile', 'army personal file', 'vyaktigat', 'dastavej', 'kagaj', 'record', 'service record', 'employment record', 'file', 'personnel file', 'individual', 'soldier file']
-  },
-  {
-    path: '/pdfs/Leave Policy.pdf',
-    title: 'Leave Policy',
-    text: '',
-    keywords: ['leave', 'vacation', 'time off', 'holiday', 'absence', 'annual leave', 'sick leave', 'casual leave', 'chutti', 'avkash', 'medical leave', 'maternity leave', 'paternity leave', 'emergency leave', 'extraordinary leave', 'study leave', 'sabbatical', 'furlough', 'rest', 'break']
-  },
-  {
-    path: '/pdfs/Promotion .pdf',
-    title: 'Promotion Cadres',
-    text: '',
-    keywords: ['promotion', 'cadre', 'rank', 'advancement', 'career progression', 'upgrade', 'hierarchy', 'utkarsh', 'teraki', 'pad', 'position', 'grade', 'seniority', 'next rank', 'promotion board', 'selection', 'merit', 'career', 'growth', 'advance']
-  },
-  {
-    path: '/pdfs/ECHS.pdf',
-    title: 'ECHS / Service',
-    text: '',
-    keywords: ['echs', 'medical', 'health', 'service', 'discharge', 'retirement', 'dismissal', 'healthcare', 'hospital', 'treatment', 'medicine', 'doctor', 'clinic', 'ex servicemen health scheme', 'medical facility', 'health insurance', 'medical card', 'dawai', 'ilaj', 'aspatal', 'sevanivritti', 'pension medical']
-  },
-  {
-    path: '/pdfs/Med cat.pdf',
-    title: 'Medical Category',
-    text: '',
-    keywords: ['medical', 'category', 'exam', 'health', 'fitness', 'medical examination', 'disability', 'compensation', 'medical board', 'fitness test', 'health check', 'medical test', 'physical', 'checkup', 'swasthya', 'pariksha', 'medical category', 'fit', 'unfit', 'permanent category', 'temporary category', 'shape1', 'shape2', 'shape3']
-  },
-  {
-    path: '/pdfs/Pay Scale.pdf',
-    title: 'Pay and Allowances',
-    text: '',
-    keywords: ['pay', 'salary', 'allowances', 'compensation', 'wages', 'benefits', 'scale', 'increment', 'paisa', 'tankhwah', 'vetan', 'bhatta', 'money', 'payment', 'income', 'basic pay', 'da', 'dearness allowance', 'hra', 'house rent allowance', 'medical allowance', 'transport allowance', 'field allowance', 'kit maintenance', 'washing allowance']
-  },
-  
-  // Career after Retirement PDFs
-  {
-    path: '/pdfs/Introduction.pdf',
-    title: 'Introduction to Post-Retirement',
-    text: '',
-    keywords: ['introduction', 'post retirement', 'after service', 'second career', 'civilian life', 'parichay', 'sevanivritti ke baad', 'retirement baad', 'new life', 'second innings', 'post army', 'veteran', 'ex serviceman', 'purv sainik', 'after army', 'new beginning', 'transition']
-  },
-  {
-    path: '/pdfs/Job-Opportunities-for-Retired-Army-Personnel.pdf',
-    title: 'Job Opportunities for Retired Army Personnel',
-    text: '',
-    keywords: ['job', 'opportunities', 'employment', 'work', 'career', 'retired', 'ex-servicemen', 'second career', 'nokri', 'kaam', 'rozgar', 'naukri', 'job vacancy', 'employment opportunity', 'work opportunity', 'post retirement job', 'veteran job', 'ex army job', 'purv sainik rozgar', 'placement', 'hiring', 'recruitment', 'opening', 'position']
-  },
-  {
-    path: '/pdfs/Professional-Courses-for-Skill-Enhancement.pdf',
-    title: 'Professional Courses for Skill Enhancement',
-    text: '',
-    keywords: ['courses', 'training', 'skill', 'enhancement', 'education', 'learning', 'professional development', 'course', 'training program', 'skill development', 'kaushal', 'siksha', 'padhai', 'study', 'certificate course', 'diploma', 'degree', 'upskilling', 'reskilling', 'capacity building', 'knowledge', 'coaching', 'tutorial']
-  },
-  {
-    path: '/pdfs/Support Resources.pdf',
-    title: 'Support Resources',
-    text: '',
-    keywords: ['support', 'resources', 'help', 'assistance', 'guidance', 'counseling', 'aid', 'sahayata', 'madad', 'support system', 'help center', 'resource center', 'guidance center', 'counseling center', 'helpline', 'assistance program', 'welfare support', 'advisory', 'consultation']
-  },
-  {
-    path: '/pdfs/Recommendations for Welfare Enhancement.pdf',
-    title: 'Recommendations for Welfare Enhancement',
-    text: '',
-    keywords: ['recommendations', 'welfare', 'enhancement', 'improvement', 'suggestions', 'betterment', 'sujhav', 'sudhar', 'kalyan', 'welfare improvement', 'better facilities', 'enhancement plan', 'improvement plan', 'welfare scheme', 'better service', 'facility improvement', 'service enhancement']
-  },
-  {
-    path: '/pdfs/Conclusion.pdf',
-    title: 'Conclusion',
-    text: '',
-    keywords: ['conclusion', 'summary', 'final', 'end', 'wrap up', 'closing', 'samapt', 'ant', 'samapan', 'final thoughts', 'ending', 'finale', 'last', 'completion', 'finish', 'close']
-  },
-  
-  // Career for Kids PDFs
-  {
-    path: '/pdfs/Career-for-kids.pdf',
-    title: 'Career for Kids',
-    text: '',
-    keywords: ['kids', 'children', 'career', 'education', 'future', 'youth', 'students', 'academic', 'bacche', 'bachpan', 'bal', 'shishu', 'child education', 'school', 'college', 'study', 'learning', 'student life', 'academic career', 'child development', 'young ones', 'teenage', 'adolescent', 'scholarship for kids', 'education for children']
-  },
-  
-  // Left Sidebar PDFs
-  {
-    path: '/pdfs/KRA.pdf',
-    title: 'KRAs',
-    text: '',
-    keywords: ['kra', 'key result areas', 'performance', 'objectives', 'goals', 'targets', 'lakshya', 'uddeshya', 'performance indicator', 'result area', 'key performance', 'achievement', 'milestone', 'evaluation', 'assessment', 'measurement', 'outcome', 'deliverable']
-  },
-  {
-    path: '/pdfs/Posted-Officers.pdf',
-    title: 'Posted Officers',
-    text: '',
-    keywords: ['posted', 'officers', 'posting', 'assignment', 'transfer', 'deployment', 'personnel', 'officer posting', 'transfer order', 'posting order', 'adhikari', 'seva', 'transfer posting', 'new posting', 'officer assignment', 'duty assignment', 'location posting', 'station posting', 'unit posting']
-  }
-];
+type UserType = 'serving' | 'retired' | 'agniveer' | 'family' | null;
 
 const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = ({ onOpenPDF }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [userType, setUserType] = useState<UserType>(null);
   const [messages, setMessages] = useState<Message[]>([
-    { id: 1, text: "Hi Thambi, Need help? 🪖 I'm Sainik Sahayak, your army document assistant! You can type or speak to me in Hindi or English.", isUser: false }
+    { 
+      id: 1, 
+      text: "🪖 Namaste! I'm Sainik Sahayak, your army document assistant!\n\nTo provide you with the most relevant information, please tell me which category you belong to:", 
+      isUser: false,
+      userTypeSelection: true
+    }
   ]);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -139,13 +87,13 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
   const [listeningProgress, setListeningProgress] = useState(0);
   const [voiceActivity, setVoiceActivity] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const recognitionRef = useRef<any>(null);
+  const recognitionRef = useRef<SpeechRecognition | null>(null);
   const listeningTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const voiceActivityRef = useRef<NodeJS.Timeout | null>(null);
 
   // Initialize Fuse.js for fuzzy search
-  const fuse = new Fuse(pdfData, {
+  const fuse = new Fuse(pdfSearchData, {
     keys: ['title', 'keywords', 'text'],
     threshold: 0.4,
     includeScore: true
@@ -164,7 +112,7 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       setSpeechSupported(true);
       
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
       
       recognition.continuous = false;
@@ -204,14 +152,14 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
         voiceActivityRef.current = activityInterval;
       };
       
-      recognition.onresult = (event: any) => {
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
         const transcript = event.results[0][0].transcript;
         setInputText(prev => prev + ' ' + transcript);
         // Trigger voice activity on actual speech
         setVoiceActivity(true);
       };
       
-      recognition.onerror = (event: any) => {
+      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error('Speech recognition error:', event.error);
         setIsListening(false);
         
@@ -332,7 +280,7 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
         const pageText = textContent.items
-          .map((item: any) => item.str)
+          .map((item) => 'str' in item ? item.str : '')
           .join(' ');
         
         // If no text found, try OCR on the page
@@ -378,7 +326,7 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
     const loadPDFTexts = async () => {
       const textMap = new Map<string, string>();
       
-      for (const pdf of pdfData) {
+      for (const pdf of pdfSearchData) {
         try {
           const text = await extractPDFText(pdf.path);
           textMap.set(pdf.path, text);
@@ -430,47 +378,273 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
     return normalizedText;
   };
 
-  const searchPDFs = (query: string): PDFData | null => {
+  const searchPDFs = (query: string, userType: UserType): PDFData[] => {
     const searchQuery = normalizeText(query);
+    let filteredPDFs = pdfSearchData;
     
-    // First try exact keyword matching
-    for (const pdf of pdfData) {
-      if (pdf.keywords.some(keyword => 
-        keyword.toLowerCase().includes(searchQuery) || 
-        searchQuery.includes(keyword.toLowerCase())
-      )) {
-        return pdf;
-      }
+    // Filter PDFs based on user type
+    if (userType) {
+      filteredPDFs = pdfSearchData.filter(pdf => {
+        const title = pdf.title.toLowerCase();
+        const keywords = pdf.keywords.join(' ').toLowerCase();
+        
+        switch (userType) {
+          case 'serving':
+            // Prioritize current service documents
+            return !title.includes('retired') && 
+                   !title.includes('ex-servicemen') && 
+                   !title.includes('post-retirement') &&
+                   !title.includes('resettlement') &&
+                   !title.includes('kids') &&
+                   !title.includes('family pension') &&
+                   !title.includes('widow pension');
+                   
+          case 'retired':
+            // Prioritize retirement and post-service documents
+            return title.includes('pension') ||
+                   title.includes('retired') ||
+                   title.includes('ex-servicemen') ||
+                   title.includes('post-retirement') ||
+                   title.includes('resettlement') ||
+                   title.includes('echs') ||
+                   title.includes('job opportunities') ||
+                   title.includes('disability compensation') ||
+                   keywords.includes('veteran') ||
+                   keywords.includes('purv sainik');
+                   
+          case 'agniveer':
+            // Prioritize AGNIVEER specific documents
+            return title.includes('agniveer') ||
+                   title.includes('agnipath') ||
+                   keywords.includes('agniveer') ||
+                   keywords.includes('agnipath') ||
+                   // Also include general service documents relevant to AGNIVEER
+                   title.includes('leave') ||
+                   title.includes('pay') ||
+                   title.includes('medical') ||
+                   title.includes('posting');
+                   
+          case 'family':
+            // Prioritize family-related documents
+            return title.includes('family') ||
+                   title.includes('kids') ||
+                   title.includes('children') ||
+                   title.includes('career for kids') ||
+                   title.includes('widow pension') ||
+                   title.includes('dependent') ||
+                   title.includes('echs') ||
+                   keywords.includes('bacche') ||
+                   keywords.includes('parivar') ||
+                   keywords.includes('family');
+                   
+          default:
+            return true;
+        }
+      });
     }
     
-    // Try partial matching for compound words
-    for (const pdf of pdfData) {
+    // Calculate weighted scores for each PDF
+    const scoredPDFs: Array<{ pdf: PDFData; score: number; matchType: string }> = [];
+    
+    for (const pdf of filteredPDFs) {
+      let score = 0;
+      let matchType = '';
+      
+      // 1. EXACT TITLE MATCH (Highest Priority - Weight: 100)
+      if (pdf.title.toLowerCase() === searchQuery) {
+        score += 100;
+        matchType = 'exact-title';
+      }
+      
+      // 2. EXACT KEYWORD MATCH (High Priority - Weight: 80)
+      const exactKeywordMatch = pdf.keywords.find(keyword => 
+        keyword.toLowerCase() === searchQuery
+      );
+      if (exactKeywordMatch) {
+        score += 80;
+        if (!matchType) matchType = 'exact-keyword';
+      }
+      
+      // 3. TITLE CONTAINS QUERY (High Priority - Weight: 70)
+      if (pdf.title.toLowerCase().includes(searchQuery)) {
+        score += 70;
+        if (!matchType) matchType = 'title-contains';
+      }
+      
+      // 4. MULTIPLE KEYWORD MATCHES (Medium-High Priority - Weight: 60)
+      const keywordMatches = pdf.keywords.filter(keyword => 
+        keyword.toLowerCase().includes(searchQuery) || 
+        searchQuery.includes(keyword.toLowerCase())
+      );
+      if (keywordMatches.length > 1) {
+        score += 60 + (keywordMatches.length * 5); // Bonus for multiple matches
+        if (!matchType) matchType = 'multiple-keywords';
+      }
+      
+      // 5. SINGLE KEYWORD CONTAINS QUERY (Medium Priority - Weight: 40)
+      else if (keywordMatches.length === 1) {
+        score += 40;
+        if (!matchType) matchType = 'single-keyword';
+      }
+      
+      // 6. QUERY CONTAINS KEYWORD (Medium Priority - Weight: 35)
+      const queryContainsKeyword = pdf.keywords.find(keyword => 
+        searchQuery.includes(keyword.toLowerCase())
+      );
+      if (queryContainsKeyword && !keywordMatches.length) {
+        score += 35;
+        if (!matchType) matchType = 'query-contains-keyword';
+      }
+      
+      // 7. PARTIAL WORD MATCHES (Lower Priority - Weight: 25)
       const queryWords = searchQuery.split(' ');
-      const hasMatch = queryWords.some(word => 
+      const partialMatches = queryWords.filter(word => 
+        word.length > 2 && // Only consider words longer than 2 characters
         pdf.keywords.some(keyword => 
           keyword.toLowerCase().includes(word) || 
           word.includes(keyword.toLowerCase())
         )
       );
-      if (hasMatch) {
-        return pdf;
+      if (partialMatches.length > 0 && score === 0) {
+        score += 25 + (partialMatches.length * 3);
+        if (!matchType) matchType = 'partial-words';
+      }
+      
+      // 8. PDF TEXT CONTAINS QUERY (Lowest Priority - Weight: 15)
+      if (pdf.text && pdf.text.includes(searchQuery) && score === 0) {
+        score += 15;
+        if (!matchType) matchType = 'text-content';
+      }
+      
+      // 9. USER TYPE BONUS (Additional scoring based on relevance to user type)
+      if (userType && score > 0) {
+        const userTypeBonus = calculateUserTypeBonus(pdf, userType);
+        score += userTypeBonus;
+      }
+      
+      // Only include PDFs with a score > 0
+      if (score > 0) {
+        scoredPDFs.push({ pdf, score, matchType });
       }
     }
     
-    // Then try fuzzy search on titles and keywords
-    const fuseResults = fuse.search(searchQuery);
-    if (fuseResults.length > 0 && fuseResults[0].score! < 0.6) {
-      return fuseResults[0].item;
-    }
-    
-    // Finally search in extracted PDF text
-    for (const pdf of pdfData) {
-      if (pdf.text && pdf.text.includes(searchQuery)) {
-        return pdf;
+    // Sort by score (highest first), then by match type priority
+    scoredPDFs.sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
       }
+      
+      // If scores are equal, prioritize by match type
+      const matchTypePriority = {
+        'exact-title': 1,
+        'exact-keyword': 2,
+        'title-contains': 3,
+        'multiple-keywords': 4,
+        'single-keyword': 5,
+        'query-contains-keyword': 6,
+        'partial-words': 7,
+        'text-content': 8
+      };
+      
+      return (matchTypePriority[a.matchType as keyof typeof matchTypePriority] || 9) - 
+             (matchTypePriority[b.matchType as keyof typeof matchTypePriority] || 9);
+    });
+    
+    // Return the sorted PDFs
+    return scoredPDFs.map(item => item.pdf);
+  };
+  
+  const calculateUserTypeBonus = (pdf: PDFData, userType: UserType): number => {
+    const title = pdf.title.toLowerCase();
+    const keywords = pdf.keywords.join(' ').toLowerCase();
+    let bonus = 0;
+    
+    switch (userType) {
+      case 'serving':
+        if (title.includes('promotion') || title.includes('pay') || title.includes('leave')) bonus += 10;
+        if (title.includes('kra') || title.includes('posting')) bonus += 8;
+        if (keywords.includes('serving') || keywords.includes('current service')) bonus += 5;
+        break;
+        
+      case 'retired':
+        if (title.includes('pension') || title.includes('retired')) bonus += 15;
+        if (title.includes('echs') || title.includes('resettlement')) bonus += 12;
+        if (title.includes('disability') || title.includes('family pension')) bonus += 10;
+        if (keywords.includes('veteran') || keywords.includes('ex-servicemen')) bonus += 8;
+        break;
+        
+      case 'agniveer':
+        if (title.includes('agniveer') || title.includes('agnipath')) bonus += 20;
+        if (title.includes('benefits') && keywords.includes('agniveer')) bonus += 15;
+        if (title.includes('training') || title.includes('skill')) bonus += 8;
+        break;
+        
+      case 'family':
+        if (title.includes('family') || title.includes('kids')) bonus += 15;
+        if (title.includes('dependent') || title.includes('children')) bonus += 12;
+        if (title.includes('widow') || title.includes('scholarship')) bonus += 10;
+        if (keywords.includes('parivar') || keywords.includes('bacche')) bonus += 8;
+        break;
     }
     
-    return null;
+    return bonus;
+  };
+
+  const resetChatbot = () => {
+    setUserType(null);
+    setMessages([
+      { 
+        id: 1, 
+        text: "🪖 Namaste! I'm Sainik Sahayak, your army document assistant!\n\nTo provide you with the most relevant information, please tell me which category you belong to:", 
+        isUser: false,
+        userTypeSelection: true
+      }
+    ]);
+    setInputText('');
+    setIsLoading(false);
+  };
+
+  const handleUserTypeSelection = (selectedType: UserType) => {
+    setUserType(selectedType);
+    
+    const userTypeMessage: Message = {
+      id: Date.now(),
+      text: getSelectedTypeText(selectedType),
+      isUser: true
+    };
+    
+    const welcomeMessage: Message = {
+      id: Date.now() + 1,
+      text: getWelcomeMessage(selectedType),
+      isUser: false
+    };
+    
+    setMessages(prev => [...prev, userTypeMessage, welcomeMessage]);
+  };
+  
+  const getSelectedTypeText = (type: UserType): string => {
+    switch (type) {
+      case 'serving': return '🎖️ Serving Personnel';
+      case 'retired': return '🏅 Retired Personnel';
+      case 'agniveer': return '🔥 AGNIVEER';
+      case 'family': return '👨‍👩‍👧‍👦 Family Member';
+      default: return '';
+    }
+  };
+  
+  const getWelcomeMessage = (type: UserType): string => {
+    switch (type) {
+      case 'serving':
+        return "Welcome, Soldier! 🎖️ I'll help you with current service documents like promotions, pay scales, leave policies, medical categories, and posting information. What do you need help with?";
+      case 'retired':
+        return "Welcome, Veteran! 🏅 I'll assist you with retirement benefits, pensions, ECHS, resettlement opportunities, and post-service support. How can I help you today?";
+      case 'agniveer':
+        return "Welcome, AGNIVEER! 🔥 I'll help you with AGNIVEER-specific benefits, training, compensation, and career opportunities. What information do you need?";
+      case 'family':
+        return "Welcome, Family Member! 👨‍👩‍👧‍👦 I'll help you with family-related benefits, children's career guidance, dependent allowances, and family support services. What would you like to know?";
+      default:
+        return "How can I help you today?";
+    }
   };
 
   const handleSendMessage = async () => {
@@ -486,23 +660,47 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
     setInputText('');
     setIsLoading(true);
 
-    // Search for relevant PDF
-    const foundPDF = searchPDFs(inputText);
+    // Search for relevant PDFs with user type context
+    const foundPDFs = searchPDFs(inputText, userType);
 
     let botResponse: Message;
 
-    if (foundPDF) {
+    if (foundPDFs.length === 1) {
+      // Single PDF found
       botResponse = {
         id: Date.now() + 1,
-        text: `I found the perfect document for you! The "${foundPDF.title}" contains information about what you're looking for. Would you like me to open it?`,
+        text: `I found the perfect document for you! The "${foundPDFs[0].title}" contains information about what you're looking for. Would you like me to open it?`,
         isUser: false,
-        pdfPath: foundPDF.path,
-        pdfTitle: foundPDF.title
+        pdfPath: foundPDFs[0].path,
+        pdfTitle: foundPDFs[0].title
       };
+    } else if (foundPDFs.length > 1) {
+      // Multiple PDFs found - ask for clarification with confidence indicators
+      const topMatch = foundPDFs[0];
+      const hasHighConfidenceMatch = foundPDFs.length > 1 && 
+        (topMatch.title.toLowerCase().includes(inputText.toLowerCase()) ||
+         topMatch.keywords.some(k => k.toLowerCase() === inputText.toLowerCase()));
+      
+      if (hasHighConfidenceMatch) {
+        botResponse = {
+          id: Date.now() + 1,
+          text: `I found several relevant documents, with "${topMatch.title}" being the most relevant. Here are your options:`,
+          isUser: false,
+          pdfOptions: foundPDFs.slice(0, 5) // Limit to top 5 results
+        };
+      } else {
+        botResponse = {
+          id: Date.now() + 1,
+          text: `I found multiple documents related to your query. What are you looking for specifically? Please choose from the options below:`,
+          isUser: false,
+          pdfOptions: foundPDFs.slice(0, 5) // Limit to top 5 results
+        };
+      }
     } else {
+      // No PDFs found - provide contextual suggestions based on user type
       botResponse = {
         id: Date.now() + 1,
-        text: "I couldn't find a specific document for that query. Try searching for terms like:\n• 'nokri' or 'job' for employment\n• 'chutti' or 'leave' for leave policies\n• 'promotion' or 'teraki' for career advancement\n• 'medical' or 'dawai' for health services\n• 'pay' or 'tankhwah' for salary information\n• 'kids' or 'bacche' for children's career guidance\n\nYou can also browse the modules in the main section!",
+        text: getContextualSuggestions(userType),
         isUser: false
       };
     }
@@ -511,6 +709,21 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
       setMessages(prev => [...prev, botResponse]);
       setIsLoading(false);
     }, 1000);
+  };
+
+  const getContextualSuggestions = (type: UserType): string => {
+    switch (type) {
+      case 'serving':
+        return "I couldn't find a specific document for that query. As serving personnel, you might be interested in:\n• 'promotion' or 'teraki' for career advancement\n• 'pay' or 'tankhwah' for salary information\n• 'leave' or 'chutti' for leave policies\n• 'medical' for health services\n• 'posting' for transfer information\n• 'kra' for performance areas";
+      case 'retired':
+        return "I couldn't find a specific document for that query. As a veteran, you might need:\n• 'pension' for retirement benefits\n• 'echs' for medical services\n• 'resettlement' for post-service opportunities\n• 'job opportunities' for second career\n• 'disability compensation' for war injuries\n• 'family pension' for dependent benefits";
+      case 'agniveer':
+        return "I couldn't find a specific document for that query. As an AGNIVEER, you might be looking for:\n• 'agniveer benefits' for compensation details\n• 'agnipath scheme' for program information\n• 'training' for skill development\n• 'pay' or 'salary' for compensation\n• 'leave' or 'chutti' for time off policies\n• 'exit benefits' for post-service options";
+      case 'family':
+        return "I couldn't find a specific document for that query. For family members, you might need:\n• 'kids career' or 'children education' for guidance\n• 'family pension' for dependent benefits\n• 'echs' for family medical services\n• 'scholarship' for educational support\n• 'welfare' for family assistance programs";
+      default:
+        return "I couldn't find a specific document for that query. Try searching for terms like:\n• 'job' for employment\n• 'leave' for leave policies\n• 'promotion' for career advancement\n• 'medical' for health services\n• 'pay' for salary information\n• 'kids' for children's guidance";
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -537,16 +750,39 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
           <div className="flex items-center justify-between p-4 border-b border-border bg-primary/5 rounded-t-lg">
             <div className="flex items-center gap-2">
               <Bot className="h-5 w-5 text-primary" />
-              <span className="font-semibold text-foreground">Sainik Sahayak</span>
+              <div className="flex flex-col">
+                <span className="font-semibold text-foreground">Sainik Sahayak</span>
+                {userType && (
+                  <span className="text-xs text-muted-foreground">
+                    {getSelectedTypeText(userType)}
+                  </span>
+                )}
+              </div>
             </div>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(false)}
-              className="h-8 w-8 p-0"
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex items-center gap-2">
+              {userType && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={resetChatbot}
+                  className="h-8 w-8 p-0 text-xs"
+                  title="Change Category"
+                >
+                  🔄
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  setIsOpen(false);
+                  resetChatbot();
+                }}
+                className="h-8 w-8 p-0"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Futuristic gradient overlay when listening */}
@@ -609,6 +845,42 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
                   }`}
                 >
                   <p className="text-sm">{message.text}</p>
+                  {message.userTypeSelection && !userType && (
+                    <div className="mt-3 space-y-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-left justify-start"
+                        onClick={() => handleUserTypeSelection('serving')}
+                      >
+                        🎖️ Serving Personnel
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-left justify-start"
+                        onClick={() => handleUserTypeSelection('retired')}
+                      >
+                        🏅 Retired Personnel
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-left justify-start"
+                        onClick={() => handleUserTypeSelection('agniveer')}
+                      >
+                        🔥 AGNIVEER
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full text-left justify-start"
+                        onClick={() => handleUserTypeSelection('family')}
+                      >
+                        👨‍👩‍👧‍👦 Family Member
+                      </Button>
+                    </div>
+                  )}
                   {message.pdfPath && (
                     <Button
                       variant="outline"
@@ -619,6 +891,46 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
                       <FileText className="h-4 w-4 mr-2" />
                       Open Document
                     </Button>
+                  )}
+                  {message.pdfOptions && message.pdfOptions.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {message.pdfOptions.map((pdf, index) => {
+                        // Calculate match indicator based on position (top results are better matches)
+                        const getMatchIndicator = (index: number) => {
+                          if (index === 0) return { emoji: '🎯', text: 'Best Match', color: 'text-green-600' };
+                          if (index === 1) return { emoji: '⭐', text: 'High Match', color: 'text-blue-600' };
+                          if (index === 2) return { emoji: '✨', text: 'Good Match', color: 'text-purple-600' };
+                          return { emoji: '📄', text: 'Related', color: 'text-gray-600' };
+                        };
+                        
+                        const matchInfo = getMatchIndicator(index);
+                        
+                        return (
+                          <Button
+                            key={index}
+                            variant="outline"
+                            size="sm"
+                            className="w-full text-left justify-start h-auto p-3 hover:bg-accent/50 overflow-hidden"
+                            onClick={() => onOpenPDF(pdf.path, pdf.title)}
+                          >
+                            <div className="flex items-start gap-3 w-full min-w-0">
+                              <FileText className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                              <div className="text-left flex-1 min-w-0 overflow-hidden">
+                                <div className="flex items-start justify-between gap-2 mb-1">
+                                  <span className="font-medium text-xs truncate flex-1 min-w-0">{pdf.title}</span>
+                                  <span className={`text-xs ${matchInfo.color} flex items-center gap-1 flex-shrink-0 whitespace-nowrap`}>
+                                    {matchInfo.emoji} {matchInfo.text}
+                                  </span>
+                                </div>
+                                <div className="text-xs text-muted-foreground truncate">
+                                  Click to open this document
+                                </div>
+                              </div>
+                            </div>
+                          </Button>
+                        );
+                      })}
+                    </div>
                   )}
                 </div>
               </div>
@@ -639,36 +951,44 @@ const Chatbot: React.FC<{ onOpenPDF: (path: string, title: string) => void }> = 
 
           {/* Input */}
           <div className="border-t border-border p-4">
-            <div className="flex gap-2">
-              <Input
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask about documents or speak..."
-                className="flex-1"
-                disabled={isLoading}
-              />
-              {speechSupported && (
-                <Button
-                  onClick={isListening ? stopListening : startListening}
+            {userType ? (
+              <div className="flex gap-2">
+                <Input
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Ask about documents or speak..."
+                  className="flex-1"
                   disabled={isLoading}
-                  variant={isListening ? "default" : "outline"}
+                />
+                {speechSupported && (
+                  <Button
+                    onClick={isListening ? stopListening : startListening}
+                    disabled={isLoading}
+                    variant={isListening ? "default" : "outline"}
+                    size="sm"
+                    className={`px-3 ${isListening ? 'bg-red-500 hover:bg-red-600' : ''}`}
+                  >
+                    {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                  </Button>
+                )}
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={isLoading || !inputText.trim()}
                   size="sm"
-                  className={`px-3 ${isListening ? 'bg-red-500 hover:bg-red-600' : ''}`}
+                  className="px-3"
                 >
-                  {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                  <Send className="h-4 w-4" />
                 </Button>
-              )}
-              <Button
-                onClick={handleSendMessage}
-                disabled={isLoading || !inputText.trim()}
-                size="sm"
-                className="px-3"
-              >
-                <Send className="h-4 w-4" />
-              </Button>
-            </div>
-            {speechSupported && (
+              </div>
+            ) : (
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">
+                  Please select your category above to start chatting
+                </p>
+              </div>
+            )}
+            {speechSupported && userType && (
               <div className="mt-1 text-center">
                 <span className="text-xs text-muted-foreground">
                   💡 Voice input requires internet connection

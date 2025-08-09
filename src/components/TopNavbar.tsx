@@ -22,7 +22,6 @@ const TopNavbar = () => {
             height={140}
             loading="eager"
             decoding="async"
-            fetchPriority="high"
             className="h-35 w-35 object-contain army-logo"
             style={{ 
               maxWidth: 'none',
@@ -91,7 +90,6 @@ const TopNavbar = () => {
             height={140}
             loading="eager"
             decoding="async"
-            fetchPriority="high"
             className="h-36 w-36 object-contain regiment-logo"
             style={{
               filter: 'drop-shadow(0 0 10px rgba(255, 215, 0, 0.6)) drop-shadow(0 0 20px rgba(255, 215, 0, 0.4))',

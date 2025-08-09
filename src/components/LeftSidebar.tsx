@@ -12,16 +12,16 @@ import PDFViewerDialog from './PDFViewerDialog';
 interface CODocument {
   id: number;
   name: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   pdfPath?: string;
 }
 
 const coDocuments: CODocument[] = [
   { id: 1, name: 'KRAs', icon: User, pdfPath: '/pdfs/KRA.pdf' },
-  { id: 2, name: 'Unit History', icon: FileText, pdfPath: '/pdfs/Med cat.pdf' },
-  { id: 3, name: 'Posted Officers', icon: FileText, pdfPath: '' },
-  { id: 4, name: 'Unit Officers & Postings', icon: FileText, pdfPath: '/pdfs/Promotion .pdf' },
-  { id: 5, name: 'Awards & Citation', icon: FileText, pdfPath: '/pdfs/Leave Policy.pdf' },
+  { id: 2, name: 'Unit History', icon: FileText, pdfPath: '/pdfs/PERSONAL DOCUENTATION.pdf' },
+  { id: 3, name: 'Posted Officers', icon: FileText, pdfPath: '/pdfs/Posted-Officers.pdf' },
+  { id: 4, name: 'Unit Officers & Postings', icon: FileText, pdfPath: '/pdfs/POSTING AND TRANSFER.pdf' },
+  { id: 5, name: 'Awards & Citation', icon: FileText, pdfPath: '/pdfs/PENSIONARY AWARDS.pdf' },
 ];
 
 const LeftSidebar = () => {
