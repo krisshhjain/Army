@@ -359,7 +359,7 @@ const MainContent = () => {
             <div className="flex space-x-8">
               <button
                 onClick={() => setActiveTab('welfare')}
-                className={`px-6 py-3 text-lg font-semibold transition-all duration-300 ${
+                className={`px-6 py-4 text-lg font-semibold transition-all duration-300 leading-relaxed ${
                   activeTab === 'welfare'
                     ? 'text-primary border-b-2 border-primary'
                     : 'text-muted-foreground hover:text-foreground'
@@ -369,7 +369,7 @@ const MainContent = () => {
               </button>
               <button
                 onClick={() => setActiveTab('retirement')}
-                className={`px-6 py-3 text-lg font-semibold transition-all duration-300 ${
+                className={`px-6 py-4 text-lg font-semibold transition-all duration-300 leading-relaxed ${
                   activeTab === 'retirement'
                     ? 'text-primary border-b-2 border-primary'
                     : 'text-muted-foreground hover:text-foreground'
@@ -379,7 +379,7 @@ const MainContent = () => {
               </button>
               <button
                 onClick={() => setActiveTab('kids')}
-                className={`px-6 py-3 text-lg font-semibold transition-all duration-300 ${
+                className={`px-6 py-4 text-lg font-semibold transition-all duration-300 leading-relaxed ${
                   activeTab === 'kids'
                     ? 'text-primary border-b-2 border-primary'
                     : 'text-muted-foreground hover:text-foreground'
@@ -389,7 +389,7 @@ const MainContent = () => {
               </button>
               <button
                 onClick={() => setActiveTab('agniveer')}
-                className={`px-6 py-3 text-lg font-semibold transition-all duration-300 ${
+                className={`px-6 py-4 text-lg font-semibold transition-all duration-300 leading-relaxed ${
                   activeTab === 'agniveer'
                     ? 'text-primary border-b-2 border-primary'
                     : 'text-muted-foreground hover:text-foreground'
@@ -422,8 +422,8 @@ const MainContent = () => {
                     <div className="p-2 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
                       <IconComponent className="h-6 w-6 text-primary group-hover:text-primary/80 transition-colors" />
                     </div>
-                    <div>
-                      <h3 className="font-semibold text-base text-foreground group-hover:text-primary transition-colors">
+                    <div className="min-h-[3rem] flex items-center">
+                      <h3 className="font-semibold text-base text-foreground group-hover:text-primary transition-colors leading-relaxed text-center">
                         {module.name}
                       </h3>
                     </div>
