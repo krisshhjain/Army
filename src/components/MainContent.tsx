@@ -26,7 +26,7 @@ interface ArmyModule {
   icon: React.ComponentType<any>;
   pdfPath?: string;
   description: string;
-  category: 'welfare' | 'retirement' | 'kids';
+  category: 'welfare' | 'retirement' | 'kids' | 'agniveer';
 }
 
 // Welfare & Policy modules (current ones)
@@ -209,10 +209,38 @@ const kidsModules: ArmyModule[] = [
   },
 ];
 
+// AGNIVEER modules
+const agniveerModules: ArmyModule[] = [
+  {
+    id: 24,
+    name: 'AGNIVEER Recruitment',
+    icon: Users,
+    pdfPath: '/pdfs/AGNIVEER-Recruitment.pdf',
+    description: 'Complete guide to AGNIVEER recruitment process and eligibility',
+    category: 'agniveer',
+  },
+  {
+    id: 25,
+    name: 'AGNIVEER Training Program',
+    icon: HardHat,
+    pdfPath: '/pdfs/AGNIVEER-Training.pdf',
+    description: 'Training modules and programs for AGNIVEER personnel',
+    category: 'agniveer',
+  },
+  {
+    id: 26,
+    name: 'AGNIVEER Benefits & Opportunities',
+    icon: TrendingUp,
+    pdfPath: '/pdfs/AGNIVEER-Benefits.pdf',
+    description: 'Career benefits, opportunities and post-service guidance',
+    category: 'agniveer',
+  },
+];
+
 const MainContent = () => {
   const [selectedModule, setSelectedModule] = useState<ArmyModule | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'welfare' | 'retirement' | 'kids'>('welfare');
+  const [activeTab, setActiveTab] = useState<'welfare' | 'retirement' | 'kids' | 'agniveer'>('welfare');
 
   const getActiveModules = () => {
     switch (activeTab) {
@@ -222,6 +250,8 @@ const MainContent = () => {
         return retirementModules;
       case 'kids':
         return kidsModules;
+      case 'agniveer':
+        return agniveerModules;
       default:
         return welfareModules;
     }
@@ -235,6 +265,8 @@ const MainContent = () => {
         return 'Career after Retirement';
       case 'kids':
         return 'Career for Kids';
+      case 'agniveer':
+        return 'AGNIVEER';
       default:
         return 'Welfare & Policy';
     }
@@ -290,6 +322,16 @@ const MainContent = () => {
                 }`}
               >
                 Career for Kids
+              </button>
+              <button
+                onClick={() => setActiveTab('agniveer')}
+                className={`px-6 py-3 text-lg font-semibold transition-all duration-300 ${
+                  activeTab === 'agniveer'
+                    ? 'text-primary border-b-2 border-primary'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                Agniveer
               </button>
             </div>
           </div>
