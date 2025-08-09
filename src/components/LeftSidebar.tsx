@@ -20,7 +20,7 @@ interface CODocument {
 const coDocuments: CODocument[] = [
   { id: 1, name: 'KRAs', icon: User, pdfPath: '/pdfs/KRA.pdf' },
   { id: 2, name: 'Unit History', icon: FileText, pdfPath: '/pdfs/Med cat.pdf' },
-  { id: 3, name: 'Posted Officers', icon: FileText, pdfPath: '/pdfs/Posted-Officers.pdf' },
+  { id: 3, name: 'Posted Officers', icon: FileText, pdfPath: '' },
   { id: 4, name: 'Unit Officers & Postings', icon: FileText, pdfPath: '/pdfs/Promotion .pdf' },
   { id: 5, name: 'Awards & Citation', icon: FileText, pdfPath: '/pdfs/Leave Policy.pdf' },
 ];

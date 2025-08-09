@@ -171,24 +171,24 @@ const RightSidebar = () => {
     </h3>
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="font-medium text-muted-foreground">Phone:</span>
-        <span className="text-foreground">__________</span>
+        <span className="font-medium text-muted-foreground">Ph no.:</span>
+        <span className="text-foreground">9911377908</span>
       </div>
       <div className="flex items-center justify-between">
         <span className="font-medium text-muted-foreground">Email:</span>
-        <span className="text-foreground">__________</span>
+        <span className="text-foreground text-xs">Goondas1776@gmail.com</span>
       </div>
       <div className="flex items-center justify-between">
         <span className="font-medium text-muted-foreground">Pincode:</span>
-        <span className="text-foreground">__________</span>
+        <span className="text-foreground">695012</span>
       </div>
       <div className="flex items-center justify-between">
-        <span className="font-medium text-muted-foreground">Field 4:</span>
-        <span className="text-foreground">__________</span>
+        <span className="font-medium text-muted-foreground">Exchange:</span>
+        <span className="text-foreground text-xs">Internal communication</span>
       </div>
       <div className="flex items-center justify-between">
-        <span className="font-medium text-muted-foreground">Field 5:</span>
-        <span className="text-foreground">__________</span>
+        <span className="font-medium text-muted-foreground">Imp no.:</span>
+        <span className="text-foreground">9541256129</span>
       </div>
     </div>
   </div>

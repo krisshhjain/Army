@@ -145,75 +145,67 @@ const welfareModules: ArmyModule[] = [
   },
 ];
 
-// Career after retirement modules (placeholder PDFs for now)
+// Career after retirement modules (actual PDFs provided)
 const retirementModules: ArmyModule[] = [
-  { 
-    id: 15, 
-    name: 'Pension Schemes', 
-    icon: DollarSign, 
-    pdfPath: '/pdfs/APPF.pdf', // Update with actual PDF later
-    description: 'Post-retirement pension benefits',
-    category: 'retirement'
+  {
+    id: 15,
+    name: 'Introduction',
+    icon: FileText,
+    pdfPath: '/pdfs/Introduction.pdf',
+    description: 'Introduction to post-retirement opportunities',
+    category: 'retirement',
   },
-  { 
-    id: 16, 
-    name: 'Second Career Options', 
-    icon: TrendingUp, 
-    pdfPath: '/pdfs/Leave Policy.pdf', // Update with actual PDF later
-    description: 'Career opportunities after service',
-    category: 'retirement'
+  {
+    id: 16,
+    name: 'Job Opportunities for Retired Army Personnel',
+    icon: TrendingUp,
+    pdfPath: '/pdfs/Job-Opportunities-for-Retired-Army-Personnel.pdf',
+    description: 'Explore job opportunities after retirement',
+    category: 'retirement',
   },
-  { 
-    id: 17, 
-    name: 'Business Opportunities', 
-    icon: FileText, 
-    pdfPath: '/pdfs/Med cat.pdf', // Update with actual PDF later
-    description: 'Entrepreneurship and business guidance',
-    category: 'retirement'
+  {
+    id: 17,
+    name: 'Professional Courses for Skill Enhancement',
+    icon: HardHat,
+    pdfPath: '/pdfs/Professional-Courses-for-Skill-Enhancement.pdf',
+    description: 'Courses to enhance professional skills',
+    category: 'retirement',
   },
-  { 
-    id: 18, 
-    name: 'Financial Planning', 
-    icon: CreditCard, 
-    pdfPath: '/pdfs/Promotion .pdf', // Update with actual PDF later
-    description: 'Post-retirement financial management',
-    category: 'retirement'
+  {
+    id: 18,
+    name: 'Support Resources',
+    icon: Users,
+    pdfPath: '/pdfs/Support Resources.pdf',
+    description: 'Resources and support for retired personnel',
+    category: 'retirement',
+  },
+  {
+    id: 19,
+    name: 'Recommendations for Welfare Enhancement',
+    icon: Scale,
+    pdfPath: '/pdfs/Recommendations for Welfare Enhancement.pdf',
+    description: 'Recommendations to improve welfare',
+    category: 'retirement',
+  },
+  {
+    id: 20,
+    name: 'Conclusion',
+    icon: FileText,
+    pdfPath: '/pdfs/Conclusion.pdf',
+    description: 'Summary and conclusion',
+    category: 'retirement',
   },
 ];
 
-// Career for kids modules (placeholder PDFs for now)
+// Career for kids modules (now includes actual PDF)
 const kidsModules: ArmyModule[] = [
-  { 
-    id: 19, 
-    name: 'Education Schemes', 
-    icon: FileText, 
-    pdfPath: '/pdfs/ECHS.pdf', // Update with actual PDF later
-    description: 'Educational benefits for children',
-    category: 'kids'
-  },
-  { 
-    id: 20, 
-    name: 'Scholarship Programs', 
-    icon: TrendingUp, 
-    pdfPath: '/pdfs/APPF.pdf', // Update with actual PDF later
-    description: 'Scholarships and grants for kids',
-    category: 'kids'
-  },
-  { 
-    id: 21, 
-    name: 'Career Guidance', 
-    icon: Users, 
-    pdfPath: '/pdfs/Leave Policy.pdf', // Update with actual PDF later
-    description: 'Career counseling for army children',
-    category: 'kids'
-  },
-  { 
-    id: 22, 
-    name: 'Skill Development', 
-    icon: HardHat, 
-    pdfPath: '/pdfs/Med cat.pdf', // Update with actual PDF later
-    description: 'Skill building programs for youth',
-    category: 'kids'
+  {
+    id: 23,
+    name: 'Career for Kids',
+    icon: FileText,
+    pdfPath: '/pdfs/Career-for-kids.pdf',
+    description: 'Guidance and opportunities for children of army personnel',
+    category: 'kids',
   },
 ];
 

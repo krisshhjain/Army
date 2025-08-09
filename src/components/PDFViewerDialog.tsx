@@ -23,7 +23,7 @@ const PDFViewerDialog: React.FC<PDFViewerDialogProps> = ({
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] w-[90vw] p-0">
+  <DialogContent className="max-w-6xl max-h-[95vh] w-[95vw] p-0">
         <DialogHeader className="px-6 py-4 border-b">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-lg font-semibold">
@@ -34,7 +34,7 @@ const PDFViewerDialog: React.FC<PDFViewerDialogProps> = ({
         
         <div className="flex-1 p-6">
           {pdfPath ? (
-            <div className="w-full h-[70vh] border rounded-lg overflow-hidden">
+            <div className="w-full h-[85vh] border rounded-lg overflow-hidden">
               <iframe
                 src={pdfPath}
                 className="w-full h-full"
@@ -43,7 +43,7 @@ const PDFViewerDialog: React.FC<PDFViewerDialogProps> = ({
               />
             </div>
           ) : (
-            <div className="flex items-center justify-center h-[70vh] bg-muted rounded-lg">
+            <div className="flex items-center justify-center h-[85vh] bg-muted rounded-lg">
               <div className="text-center">
                 <FileText className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-muted-foreground mb-2">
